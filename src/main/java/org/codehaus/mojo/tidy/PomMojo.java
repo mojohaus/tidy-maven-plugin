@@ -41,32 +41,32 @@ public class PomMojo extends AbstractMojo {
     private static final String[][] sequence = {
             {"modelVersion", ""},
             {"parent", "\n"},
-            {"groupId", ""},
+            {"groupId", "\n"},
             {"artifactId", ""},
             {"version", ""},
             {"packaging", ""},
-            {"modules", ""},
-            {"properties", ""},
-            {"dependencyManagement", "\n"},
-            {"dependencies", ""},
             {"name", "\n"},
             {"description", ""},
             {"url", ""},
             {"inceptionYear", ""},
+            {"organization", ""},
+            {"licenses", ""},
             {"developers", "\n"},
             {"contributors", ""},
-            {"licenses", "\n"},
-            {"organization", "\n"},
+            {"mailingLists", "\n"},
+            {"prerequisites", "\n"},
+            {"modules", "\n"},
+            {"scm", "\n"},
+            {"issueManagement", ""},
+            {"ciManagement", ""},
+            {"distributionManagement", ""},
+            {"properties", "\n"},
+            {"repositories", "\n"},
+            {"pluginRepositories", ""},
+            {"dependencyManagement", "\n"},
+            {"dependencies", ""},
             {"build", "\n"},
             {"reporting", "\n"},
-            {"issueManagement", "\n"},
-            {"ciManagement", "\n"},
-            {"mailingLists", "\n"},
-            {"scm", "\n"},
-            {"prerequisites", "\n"},
-            {"repositories", "\n"},
-            {"pluginRepositories", "\n"},
-            {"distributionManagement", "\n"},
             {"profiles", "\n"},
     };
 
@@ -128,7 +128,8 @@ public class PomMojo extends AbstractMojo {
             input.append(inputStr.substring(0, first).trim());
             String lastSep = null;
             for (int i = 0; i < sequence.length; i++) {
-                if (lastSep == null || !StringUtils.isWhitespace(sequence[i][1]) || lastSep.length() < sequence[i][1].length()) {
+                if (lastSep == null || !StringUtils.isWhitespace(sequence[i][1]) || lastSep.length() < sequence[i][1]
+                        .length()) {
                     input.append(lastSep = sequence[i][1]);
                 }
                 if (starts[i] != -1) {
@@ -148,7 +149,7 @@ public class PomMojo extends AbstractMojo {
             }
             input.append(inputStr.substring(last));
 
-            writeFile( project.getFile(), input );
+            writeFile(project.getFile(), input);
         } catch (IOException e) {
             getLog().error(e);
         } catch (XMLStreamException e) {
