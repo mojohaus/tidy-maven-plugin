@@ -124,6 +124,27 @@ public class PomMojo extends AbstractMojo {
                 }
 
             }
+            int indentTotal = 0;
+            int indentCount = 0;
+            int lastEnd = 0;
+            for (int i = 0; i < sequence.length; i++) {
+                if (starts[i] != -1) {
+                    int indent = 0;
+                    int pos = starts[i]-1;
+                    String posChar;
+                    while (pos > lastEnd && StringUtils.isWhitespace(posChar = input.substring(pos, pos+1))) {
+                        if ("\n".equals(posChar) || "\r".equals(posChar)) {
+                            break;
+                        }
+                        indent++;
+                        pos--;
+                    }
+                    indentTotal+= indent;
+                    indentCount++;
+                }
+            }
+            getLog().debug("Average indent: " + (indentCount == 0 ? 2 : indentTotal/indentCount));
+            String indent = StringUtils.repeat(" ", indentCount == 0 ? 2 : indentTotal/indentCount);
             input = new StringBuffer(input.length() + 1024);
             input.append(inputStr.substring(0, first).trim());
             String lastSep = null;
@@ -143,11 +164,14 @@ public class PomMojo extends AbstractMojo {
                         input.append(inputStr.substring(ends[l], starts[i]).trim());
                         lastSep = null;
                     }
-                    input.append("\n  ");
+                    input.append("\n");
+                    input.append(indent);
                     input.append(inputStr.substring(starts[i], ends[i]).trim());
                 }
             }
-            input.append(inputStr.substring(last));
+            input.append("\n");
+            input.append(inputStr.substring(last).trim());
+            input.append("\n");
 
             writeFile(project.getFile(), input);
         } catch (IOException e) {
