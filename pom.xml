@@ -9,10 +9,50 @@
     <version>9</version>
     <relativePath/>
   </parent>
+
   <groupId>org.codehaus.mojo</groupId>
   <artifactId>tidy-maven-plugin</artifactId>
   <version>1.0-alpha-1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
+
+  <name>Tidy Maven Plugin</name>
+  <description>
+    Tidy Plugin for Maven. The Tidy plugin provides goals for tidying up
+    your source code.
+  </description>
+  <inceptionYear>2011</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Stephen Connolly</name>
+      <email>stephen.alan.connolly@gmail.com</email>
+      <roles>
+        <role>Lead Developer</role>
+      </roles>
+      <timezone>0</timezone>
+    </developer>
+  </developers>
+
+  <prerequisites>
+    <maven>2.0.6</maven>
+  </prerequisites>
+
+  <scm>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/tidy-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/tidy-maven-plugin</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/trunk/sandbox/tidy-maven-plugin</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MOJO</url>
+  </issueManagement>
 
   <dependencies>
     <dependency>
@@ -66,32 +106,6 @@
       <version>1.0.1</version>
     </dependency>
   </dependencies>
-
-  <name>Tidy Maven Plugin</name>
-  <description>
-    Tidy Plugin for Maven. The Tidy plugin provides goals for tidying up
-    your source code.
-  </description>
-  <inceptionYear>2011</inceptionYear>
-
-  <developers>
-    <developer>
-      <name>Stephen Connolly</name>
-      <email>stephen.alan.connolly@gmail.com</email>
-      <roles>
-        <role>Lead Developer</role>
-      </roles>
-      <timezone>0</timezone>
-    </developer>
-  </developers>
-
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
 
   <build>
     <plugins>
@@ -158,21 +172,6 @@
     </plugins>
   </reporting>
 
-  <issueManagement>
-    <system>jira</system>
-    <url>http://jira.codehaus.org/browse/MOJO</url>
-  </issueManagement>
-
-  <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/tidy-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/tidy-maven-plugin</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/sandbox/tidy-maven-plugin</url>
-  </scm>
-
-  <prerequisites>
-    <maven>2.0.6</maven>
-  </prerequisites>
-
   <profiles>
     <profile>
       <!-- run integration tests
@@ -204,5 +203,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
