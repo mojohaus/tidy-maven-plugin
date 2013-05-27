@@ -42,5 +42,6 @@ Tidy Maven Plugin
 mvn tidy:pom
 ---
 
-  The <<<pom.xml>>> file will be rewritten into the canonical ordering, keeping as much as possible of the remainder
-  of the <<<pom.xml>>> as is.
+  The <<<pom.xml>>> file will be rewritten into the
+  {{{http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention}canonical ordering}}, keeping as much
+  as possible of the remainder of the <<<pom.xml>>> as is.
