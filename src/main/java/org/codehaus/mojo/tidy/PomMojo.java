@@ -84,7 +84,7 @@ public class PomMojo extends AbstractMojo {
                 Pattern matchScopeRegex = Pattern.compile("/project");
                 Pattern matchTargetRegex = Pattern.compile("/project/\\Q" + sequence[i][0] + "\\E");
 
-                Stack stack = new Stack();
+                Stack<String> stack = new Stack<String>();
                 String path = "";
                 boolean inMatchScope = false;
                 int start = -1;
@@ -97,7 +97,7 @@ public class PomMojo extends AbstractMojo {
                     if (event.isStartElement()) {
                         stack.push(path);
                         final String elementName = event.asStartElement().getName().getLocalPart();
-                        path = new StringBuffer().append(path).append("/").append(elementName).toString();
+                        path = path + "/" + elementName;
 
                         if (matchScopeRegex.matcher(path).matches()) {
                             // we're in a new match scope
@@ -119,7 +119,7 @@ public class PomMojo extends AbstractMojo {
                             inMatchScope = false;
                             start = -1;
                         }
-                        path = (String) stack.pop();
+                        path = stack.pop();
                     }
                 }
 
