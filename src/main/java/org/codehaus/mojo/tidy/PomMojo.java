@@ -163,7 +163,7 @@ public class PomMojo extends AbstractMojo {
         }
         getLog().debug("Average indent: " + (indentCount == 0 ? 2 : indentTotal / indentCount));
         String indent = StringUtils.repeat(" ", indentCount == 0 ? 2 : indentTotal / indentCount);
-        if (first == -1) {
+        if (first > last) {
             return input;
         }
         StringBuilder output = new StringBuilder(input.length() + 1024);
