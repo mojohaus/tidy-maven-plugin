@@ -5,8 +5,8 @@
 
   <parent>
     <groupId>org.codehaus.mojo</groupId>
-    <artifactId>mojo-sandbox-parent</artifactId>
-    <version>13</version>
+    <artifactId>mojo-parent</artifactId>
+    <version>32</version>
     <relativePath/>
   </parent>
 
