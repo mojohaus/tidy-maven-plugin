@@ -63,19 +63,19 @@ public class PomMojo extends AbstractMojo {
     };
 
     private static final String[][] buildSequence = {
-            {"defaultGoal", "\n"},
+            {"defaultGoal", ""},
             {"sourceDirectory", ""},
             {"scriptSourceDirectory", ""},
-            {"testSourceDirectory", "\n"},
+            {"testSourceDirectory", ""},
             {"directory", ""},
             {"outputDirectory", ""},
-            {"testOutputDirectory", "\n"},
-            {"finalName", "\n"},
+            {"testOutputDirectory", ""},
+            {"finalName", ""},
             {"filters", ""},
             {"resources", ""},
-            {"testResources", "\n"},
+            {"testResources", ""},
             {"pluginManagement", ""},
-            {"plugins", "\n"},
+            {"plugins", ""},
             {"extensions", ""},
     };
 
