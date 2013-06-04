@@ -44,9 +44,9 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/tidy-maven-plugin</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/sandbox/tidy-maven-plugin</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/trunk/sandbox/tidy-maven-plugin</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/tidy-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/tidy-maven-plugin</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/trunk/tidy-maven-plugin</url>
   </scm>
   <issueManagement>
     <system>jira</system>
