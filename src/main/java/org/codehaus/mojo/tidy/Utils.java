@@ -12,7 +12,8 @@ import java.io.Writer;
 /**
  * Basic utility methods for reading and writing XML files
  */
-public class Utils {
+public class Utils
+{
     /**
      * Reads a file into a String.
      *
@@ -20,14 +21,18 @@ public class Utils {
      * @return String The content of the file.
      * @throws java.io.IOException when things go wrong.
      */
-    public static StringBuilder readXmlFile(File outFile)
-            throws IOException {
-        Reader reader = ReaderFactory.newXmlReader(outFile);
+    public static StringBuilder readXmlFile( File outFile )
+        throws IOException
+    {
+        Reader reader = ReaderFactory.newXmlReader( outFile );
 
-        try {
-            return new StringBuilder(IOUtil.toString(reader));
-        } finally {
-            IOUtil.close(reader);
+        try
+        {
+            return new StringBuilder( IOUtil.toString( reader ) );
+        }
+        finally
+        {
+            IOUtil.close( reader );
         }
     }
 
@@ -38,13 +43,17 @@ public class Utils {
      * @param input   The contents of the file.
      * @throws java.io.IOException when things go wrong.
      */
-    public static void writeXmlFile(File outFile, StringBuilder input)
-            throws IOException {
-        Writer writer = WriterFactory.newXmlWriter(outFile);
-        try {
-            IOUtil.copy(input.toString(), writer);
-        } finally {
-            IOUtil.close(writer);
+    public static void writeXmlFile( File outFile, StringBuilder input )
+        throws IOException
+    {
+        Writer writer = WriterFactory.newXmlWriter( outFile );
+        try
+        {
+            IOUtil.copy( input.toString(), writer );
+        }
+        finally
+        {
+            IOUtil.close( writer );
         }
     }
 }

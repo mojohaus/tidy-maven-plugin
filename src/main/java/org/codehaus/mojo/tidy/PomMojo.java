@@ -21,8 +21,10 @@ import java.util.regex.Pattern;
 /**
  * Tidy up the <code>pom.xml</code> into the canonical order.
  */
-@Mojo(name = "pom", requiresProject = true, requiresDirectInvocation = true)
-public class PomMojo extends AbstractMojo {
+@Mojo( name = "pom", requiresProject = true, requiresDirectInvocation = true )
+public class PomMojo
+    extends AbstractMojo
+{
 
     /**
      * The Maven Project.
@@ -30,82 +32,57 @@ public class PomMojo extends AbstractMojo {
     @Component
     private MavenProject project;
 
-    private static final String[][] sequence = {
-            {"modelVersion", ""},
-            {"parent", "\n"},
-            {"groupId", "\n"},
-            {"artifactId", ""},
-            {"version", ""},
-            {"packaging", ""},
-            {"name", "\n"},
-            {"description", ""},
-            {"url", ""},
-            {"inceptionYear", ""},
-            {"organization", ""},
-            {"licenses", ""},
-            {"developers", "\n"},
-            {"contributors", ""},
-            {"mailingLists", "\n"},
-            {"prerequisites", "\n"},
-            {"modules", "\n"},
-            {"scm", "\n"},
-            {"issueManagement", ""},
-            {"ciManagement", ""},
-            {"distributionManagement", ""},
-            {"properties", "\n"},
-            {"repositories", "\n"},
-            {"pluginRepositories", ""},
-            {"dependencyManagement", "\n"},
-            {"dependencies", ""},
-            {"build", "\n"},
-            {"reporting", "\n"},
-            {"profiles", "\n"},
-    };
+    private static final String[][] sequence =
+        { { "modelVersion", "" }, { "parent", "\n" }, { "groupId", "\n" }, { "artifactId", "" }, { "version", "" },
+            { "packaging", "" }, { "name", "\n" }, { "description", "" }, { "url", "" }, { "inceptionYear", "" },
+            { "organization", "" }, { "licenses", "" }, { "developers", "\n" }, { "contributors", "" },
+            { "mailingLists", "\n" }, { "prerequisites", "\n" }, { "modules", "\n" }, { "scm", "\n" },
+            { "issueManagement", "" }, { "ciManagement", "" }, { "distributionManagement", "" }, { "properties", "\n" },
+            { "repositories", "\n" }, { "pluginRepositories", "" }, { "dependencyManagement", "\n" },
+            { "dependencies", "" }, { "build", "\n" }, { "reporting", "\n" }, { "profiles", "\n" }, };
 
-    private static final String[][] buildSequence = {
-            {"defaultGoal", ""},
-            {"sourceDirectory", ""},
-            {"scriptSourceDirectory", ""},
-            {"testSourceDirectory", ""},
-            {"directory", ""},
-            {"outputDirectory", ""},
-            {"testOutputDirectory", ""},
-            {"finalName", ""},
-            {"filters", ""},
-            {"resources", ""},
-            {"testResources", ""},
-            {"pluginManagement", ""},
-            {"plugins", ""},
-            {"extensions", ""},
-    };
+    private static final String[][] buildSequence =
+        { { "defaultGoal", "" }, { "sourceDirectory", "" }, { "scriptSourceDirectory", "" },
+            { "testSourceDirectory", "" }, { "directory", "" }, { "outputDirectory", "" },
+            { "testOutputDirectory", "" }, { "finalName", "" }, { "filters", "" }, { "resources", "" },
+            { "testResources", "" }, { "pluginManagement", "" }, { "plugins", "" }, { "extensions", "" }, };
 
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        try {
+    public void execute()
+        throws MojoExecutionException, MojoFailureException
+    {
+        try
+        {
 
-            StringBuilder input = Utils.readXmlFile(project.getFile());
-            input = sortSections(input, "/project/build", buildSequence);
-            input = sortSections(input, "/project", sequence);
+            StringBuilder input = Utils.readXmlFile( project.getFile() );
+            input = sortSections( input, "/project/build", buildSequence );
+            input = sortSections( input, "/project", sequence );
 
-            Utils.writeXmlFile(project.getFile(), input);
-        } catch (IOException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
-        } catch (XMLStreamException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+            Utils.writeXmlFile( project.getFile(), input );
+        }
+        catch ( IOException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
+        }
+        catch ( XMLStreamException e )
+        {
+            throw new MojoExecutionException( e.getMessage(), e );
         }
     }
 
-    private StringBuilder sortSections(StringBuilder input, String scope, String[][] sequence)
-            throws XMLStreamException {
+    private StringBuilder sortSections( StringBuilder input, String scope, String[][] sequence )
+        throws XMLStreamException
+    {
         XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
-        inputFactory.setProperty(XMLInputFactory2.P_PRESERVE_LOCATION, Boolean.TRUE);
+        inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, Boolean.TRUE );
         String inputStr = input.toString();
         int first = Integer.MAX_VALUE, last = Integer.MIN_VALUE;
         int outdent = -1;
         int[] starts = new int[sequence.length];
         int[] ends = new int[sequence.length];
-        for (int i = 0; i < sequence.length; i++) {
-            Pattern matchScopeRegex = Pattern.compile("\\Q" + scope + "\\E");
-            Pattern matchTargetRegex = Pattern.compile("\\Q" + scope + "\\E/\\Q" + sequence[i][0] + "\\E");
+        for ( int i = 0; i < sequence.length; i++ )
+        {
+            Pattern matchScopeRegex = Pattern.compile( "\\Q" + scope + "\\E" );
+            Pattern matchTargetRegex = Pattern.compile( "\\Q" + scope + "\\E/\\Q" + sequence[i][0] + "\\E" );
 
             Stack<String> stack = new Stack<String>();
             String path = "";
@@ -113,34 +90,44 @@ public class PomMojo extends AbstractMojo {
             int start = -1;
             starts[i] = ends[i] = -1;
 
-            XMLEventReader pom = inputFactory.createXMLEventReader(new StringReader(inputStr));
+            XMLEventReader pom = inputFactory.createXMLEventReader( new StringReader( inputStr ) );
 
-            while (pom.hasNext()) {
+            while ( pom.hasNext() )
+            {
                 XMLEvent event = pom.nextEvent();
-                if (event.isStartElement()) {
-                    stack.push(path);
+                if ( event.isStartElement() )
+                {
+                    stack.push( path );
                     final String elementName = event.asStartElement().getName().getLocalPart();
                     path = path + "/" + elementName;
 
-                    if (matchScopeRegex.matcher(path).matches()) {
+                    if ( matchScopeRegex.matcher( path ).matches() )
+                    {
                         // we're in a new match scope
                         // reset any previous partial matches
                         inMatchScope = true;
                         start = -1;
-                    } else if (inMatchScope && matchTargetRegex.matcher(path).matches()) {
+                    }
+                    else if ( inMatchScope && matchTargetRegex.matcher( path ).matches() )
+                    {
                         start = event.getLocation().getCharacterOffset();
                     }
                 }
-                if (event.isEndElement()) {
-                    if (matchTargetRegex.matcher(path).matches() && start != -1) {
+                if ( event.isEndElement() )
+                {
+                    if ( matchTargetRegex.matcher( path ).matches() && start != -1 )
+                    {
                         starts[i] = start;
                         ends[i] = pom.peek().getLocation().getCharacterOffset();
-                        first = Math.min(first, starts[i]);
-                        last = Math.max(last, ends[i]);
+                        first = Math.min( first, starts[i] );
+                        last = Math.max( last, ends[i] );
                         break;
-                    } else if (matchScopeRegex.matcher(path).matches()) {
-                        if (outdent == -1) {
-                            outdent = getSpaceIndent(input, start, event.getLocation().getCharacterOffset() - 1);
+                    }
+                    else if ( matchScopeRegex.matcher( path ).matches() )
+                    {
+                        if ( outdent == -1 )
+                        {
+                            outdent = getSpaceIndent( input, start, event.getLocation().getCharacterOffset() - 1 );
                         }
                         inMatchScope = false;
                         start = -1;
@@ -154,62 +141,83 @@ public class PomMojo extends AbstractMojo {
         int tabIndentTotal = 0;
         int indentCount = 0;
         int lastEnd = 0;
-        for (int i = 0; i < sequence.length; i++) {
-            if (starts[i] != -1) {
+        for ( int i = 0; i < sequence.length; i++ )
+        {
+            if ( starts[i] != -1 )
+            {
                 int pos = starts[i] - 1;
-                spaceIndentTotal += getSpaceIndent(input, lastEnd, pos);
-                tabIndentTotal += getTabIndent(input, lastEnd, pos);
+                spaceIndentTotal += getSpaceIndent( input, lastEnd, pos );
+                tabIndentTotal += getTabIndent( input, lastEnd, pos );
                 indentCount++;
             }
         }
-        getLog().debug("Average indent: " + (indentCount == 0 ? 2 : spaceIndentTotal / indentCount) + " spaces, "
-                + (indentCount == 0 ? 0 : tabIndentTotal / indentCount) + " tabs");
-        String indent = StringUtils.repeat("\t", indentCount == 0 ? 0 : tabIndentTotal / indentCount)
-                + StringUtils.repeat(" ", indentCount == 0 ? 2 : spaceIndentTotal / indentCount);
-        if (first > last) {
+        getLog().debug( "Average indent: " + ( indentCount == 0 ? 2 : spaceIndentTotal / indentCount ) + " spaces, " + (
+            indentCount == 0
+                ? 0
+                : tabIndentTotal / indentCount ) + " tabs" );
+        String indent =
+            StringUtils.repeat( "\t", indentCount == 0 ? 0 : tabIndentTotal / indentCount ) + StringUtils.repeat( " ",
+                                                                                                                  indentCount
+                                                                                                                      == 0
+                                                                                                                      ? 2
+                                                                                                                      : spaceIndentTotal
+                                                                                                                          / indentCount );
+        if ( first > last )
+        {
             return input;
         }
-        StringBuilder output = new StringBuilder(input.length() + 1024);
-        output.append(inputStr.substring(0, first).trim());
+        StringBuilder output = new StringBuilder( input.length() + 1024 );
+        output.append( inputStr.substring( 0, first ).trim() );
         String lastSep = null;
-        for (int i = 0; i < sequence.length; i++) {
-            if (lastSep == null || !StringUtils.isWhitespace(sequence[i][1]) || lastSep.length() < sequence[i][1]
-                    .length()) {
-                output.append(lastSep = sequence[i][1]);
+        for ( int i = 0; i < sequence.length; i++ )
+        {
+            if ( lastSep == null || !StringUtils.isWhitespace( sequence[i][1] )
+                || lastSep.length() < sequence[i][1].length() )
+            {
+                output.append( lastSep = sequence[i][1] );
             }
-            if (starts[i] != -1) {
+            if ( starts[i] != -1 )
+            {
                 int l = -1;
-                for (int k = 0; k < sequence.length; k++) {
-                    if (ends[k] != -1 && (l == -1 || ends[l] < ends[k]) && ends[k] < starts[i]) {
+                for ( int k = 0; k < sequence.length; k++ )
+                {
+                    if ( ends[k] != -1 && ( l == -1 || ends[l] < ends[k] ) && ends[k] < starts[i] )
+                    {
                         l = k;
                     }
                 }
-                if (l != -1) {
-                    output.append(inputStr.substring(ends[l], starts[i]).trim());
+                if ( l != -1 )
+                {
+                    output.append( inputStr.substring( ends[l], starts[i] ).trim() );
                     lastSep = null;
                 }
-                output.append("\n");
-                output.append(indent);
-                output.append(inputStr.substring(starts[i], ends[i]).trim());
+                output.append( "\n" );
+                output.append( indent );
+                output.append( inputStr.substring( starts[i], ends[i] ).trim() );
             }
         }
-        output.append("\n");
-        if (outdent > 0) {
-            output.append(StringUtils.repeat(" ", outdent));
+        output.append( "\n" );
+        if ( outdent > 0 )
+        {
+            output.append( StringUtils.repeat( " ", outdent ) );
         }
-        output.append(inputStr.substring(last).trim());
-        output.append("\n");
+        output.append( inputStr.substring( last ).trim() );
+        output.append( "\n" );
         return output;
     }
 
-    private int getSpaceIndent(StringBuilder input, int lastEnd, int pos) {
+    private int getSpaceIndent( StringBuilder input, int lastEnd, int pos )
+    {
         int indent = 0;
         String posChar;
-        while (pos > lastEnd && StringUtils.isWhitespace(posChar = input.substring(pos, pos + 1))) {
-            if ("\n".equals(posChar) || "\r".equals(posChar)) {
+        while ( pos > lastEnd && StringUtils.isWhitespace( posChar = input.substring( pos, pos + 1 ) ) )
+        {
+            if ( "\n".equals( posChar ) || "\r".equals( posChar ) )
+            {
                 break;
             }
-            if (!"\t".equals(posChar)) {
+            if ( !"\t".equals( posChar ) )
+            {
                 indent++;
             }
             pos--;
@@ -217,14 +225,18 @@ public class PomMojo extends AbstractMojo {
         return indent;
     }
 
-    private int getTabIndent(StringBuilder input, int lastEnd, int pos) {
+    private int getTabIndent( StringBuilder input, int lastEnd, int pos )
+    {
         int indent = 0;
         String posChar;
-        while (pos > lastEnd && StringUtils.isWhitespace(posChar = input.substring(pos, pos + 1))) {
-            if ("\n".equals(posChar) || "\r".equals(posChar)) {
+        while ( pos > lastEnd && StringUtils.isWhitespace( posChar = input.substring( pos, pos + 1 ) ) )
+        {
+            if ( "\n".equals( posChar ) || "\r".equals( posChar ) )
+            {
                 break;
             }
-            if (!"\t".equals(posChar)) {
+            if ( !"\t".equals( posChar ) )
+            {
                 indent++;
             }
             pos--;
