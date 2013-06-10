@@ -140,7 +140,7 @@ public class PomMojo extends AbstractMojo {
                         break;
                     } else if (matchScopeRegex.matcher(path).matches()) {
                         if (outdent == -1) {
-                            outdent = getIndent(input, start, event.getLocation().getCharacterOffset() - 1);
+                            outdent = getSpaceIndent(input, start, event.getLocation().getCharacterOffset() - 1);
                         }
                         inMatchScope = false;
                         start = -1;
@@ -150,19 +150,22 @@ public class PomMojo extends AbstractMojo {
             }
 
         }
-        int indentTotal = 0;
+        int spaceIndentTotal = 0;
+        int tabIndentTotal = 0;
         int indentCount = 0;
         int lastEnd = 0;
         for (int i = 0; i < sequence.length; i++) {
             if (starts[i] != -1) {
                 int pos = starts[i] - 1;
-                int indent = getIndent(input, lastEnd, pos);
-                indentTotal += indent;
+                spaceIndentTotal += getSpaceIndent(input, lastEnd, pos);
+                tabIndentTotal += getTabIndent(input, lastEnd, pos);
                 indentCount++;
             }
         }
-        getLog().debug("Average indent: " + (indentCount == 0 ? 2 : indentTotal / indentCount));
-        String indent = StringUtils.repeat(" ", indentCount == 0 ? 2 : indentTotal / indentCount);
+        getLog().debug("Average indent: " + (indentCount == 0 ? 2 : spaceIndentTotal / indentCount) + " spaces, "
+                + (indentCount == 0 ? 0 : tabIndentTotal / indentCount) + " tabs");
+        String indent = StringUtils.repeat("\t", indentCount == 0 ? 0 : tabIndentTotal / indentCount)
+                + StringUtils.repeat(" ", indentCount == 0 ? 2 : spaceIndentTotal / indentCount);
         if (first > last) {
             return input;
         }
@@ -199,14 +202,31 @@ public class PomMojo extends AbstractMojo {
         return output;
     }
 
-    private int getIndent(StringBuilder input, int lastEnd, int pos) {
+    private int getSpaceIndent(StringBuilder input, int lastEnd, int pos) {
         int indent = 0;
         String posChar;
         while (pos > lastEnd && StringUtils.isWhitespace(posChar = input.substring(pos, pos + 1))) {
             if ("\n".equals(posChar) || "\r".equals(posChar)) {
                 break;
             }
-            indent++;
+            if (!"\t".equals(posChar)) {
+                indent++;
+            }
+            pos--;
+        }
+        return indent;
+    }
+
+    private int getTabIndent(StringBuilder input, int lastEnd, int pos) {
+        int indent = 0;
+        String posChar;
+        while (pos > lastEnd && StringUtils.isWhitespace(posChar = input.substring(pos, pos + 1))) {
+            if ("\n".equals(posChar) || "\r".equals(posChar)) {
+                break;
+            }
+            if (!"\t".equals(posChar)) {
+                indent++;
+            }
             pos--;
         }
         return indent;
