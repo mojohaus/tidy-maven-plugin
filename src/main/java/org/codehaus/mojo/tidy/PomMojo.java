@@ -254,7 +254,7 @@ public class PomMojo
             {
                 break;
             }
-            if ( !"\t".equals( posChar ) )
+            if ( "\t".equals( posChar ) )
             {
                 indent++;
             }
