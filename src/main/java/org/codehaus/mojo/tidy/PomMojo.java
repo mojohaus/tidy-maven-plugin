@@ -93,7 +93,7 @@ public class PomMojo
                     throws XMLStreamException
     {
         if (input.indexOf( "<?xml" ) != 0)
-            input.insert( 0,  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+            input.insert( 0,  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LS );
 
         return input;
     }
