@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 public class PomMojo
     extends AbstractMojo
 {
-
     /**
      * The Maven Project.
      */
@@ -71,8 +70,8 @@ public class PomMojo
     {
         try
         {
-
             StringBuilder input = Utils.readXmlFile( project.getFile() );
+            input = addXmlHeader( input );
             input = sortSections( input, "/project/build", buildSequence );
             input = sortSections( input, "/project", sequence );
 
@@ -88,6 +87,15 @@ public class PomMojo
         }
     }
 
+    private StringBuilder addXmlHeader( StringBuilder input )
+                    throws XMLStreamException
+    {
+        if (input.indexOf( "<?xml" ) != 0)
+            input.insert( 0,  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
+
+        return input;
+    }
+    
     private StringBuilder sortSections( StringBuilder input, String scope, String[][] sequence )
         throws XMLStreamException
     {
@@ -262,5 +270,4 @@ public class PomMojo
         }
         return indent;
     }
-
 }
