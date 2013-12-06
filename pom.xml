@@ -210,6 +210,8 @@
               <pomExcludes>
                 <!-- Still not perfect result, see MOJO-1939 -->
                 <pomExclude>pom-tab-indent/pom.xml</pomExclude>
+                <!-- Reporting but not a profiles after it leads extra new line, among others, MOJO-1981 -->
+                <pomExclude>pom-with-reporting/pom.xml</pomExclude>
               </pomExcludes>
             </configuration>
             <executions>
