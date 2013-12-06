@@ -44,6 +44,8 @@ import java.util.regex.Pattern;
 public class PomMojo
     extends AbstractMojo
 {
+    private static final String LS = System.getProperty("line.separator");
+
     /**
      * The Maven Project.
      */
@@ -51,13 +53,13 @@ public class PomMojo
     private MavenProject project;
 
     private static final String[][] sequence =
-        { { "modelVersion", "" }, { "parent", "\n" }, { "groupId", "\n" }, { "artifactId", "" }, { "version", "" },
-            { "packaging", "" }, { "name", "\n" }, { "description", "" }, { "url", "" }, { "inceptionYear", "" },
-            { "organization", "" }, { "licenses", "" }, { "developers", "\n" }, { "contributors", "" },
-            { "mailingLists", "\n" }, { "prerequisites", "\n" }, { "modules", "\n" }, { "scm", "\n" },
-            { "issueManagement", "" }, { "ciManagement", "" }, { "distributionManagement", "" }, { "properties", "\n" },
-            { "repositories", "\n" }, { "pluginRepositories", "" }, { "dependencyManagement", "\n" },
-            { "dependencies", "" }, { "build", "\n" }, { "reporting", "\n" }, { "profiles", "\n" }, };
+        { { "modelVersion", "" }, { "parent", LS }, { "groupId", LS }, { "artifactId", "" }, { "version", "" },
+            { "packaging", "" }, { "name", LS }, { "description", "" }, { "url", "" }, { "inceptionYear", "" },
+            { "organization", "" }, { "licenses", "" }, { "developers", LS }, { "contributors", "" },
+            { "mailingLists", LS }, { "prerequisites", LS }, { "modules", LS }, { "scm", LS },
+            { "issueManagement", "" }, { "ciManagement", "" }, { "distributionManagement", "" }, { "properties", LS },
+            { "repositories", LS }, { "pluginRepositories", "" }, { "dependencyManagement", LS },
+            { "dependencies", "" }, { "build", LS }, { "reporting", LS }, { "profiles", LS }, };
 
     private static final String[][] buildSequence =
         { { "defaultGoal", "" }, { "sourceDirectory", "" }, { "scriptSourceDirectory", "" },
@@ -218,18 +220,18 @@ public class PomMojo
                     output.append( inputStr.substring( ends[l], starts[i] ).trim() );
                     lastSep = null;
                 }
-                output.append( "\n" );
+                output.append( LS );
                 output.append( indent );
                 output.append( inputStr.substring( starts[i], ends[i] ).trim() );
             }
         }
-        output.append( "\n" );
+        output.append( LS );
         if ( outdent > 0 )
         {
             output.append( StringUtils.repeat( " ", outdent ) );
         }
         output.append( inputStr.substring( last ).trim() );
-        output.append( "\n" );
+        output.append( LS );
         return output;
     }
 
