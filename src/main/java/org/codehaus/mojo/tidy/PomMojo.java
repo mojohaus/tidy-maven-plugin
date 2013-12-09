@@ -164,8 +164,8 @@ public class PomMojo
                     path = stack.pop();
                 }
             }
-
         }
+
         int spaceIndentTotal = 0;
         int tabIndentTotal = 0;
         int indentCount = 0;
@@ -180,17 +180,11 @@ public class PomMojo
                 indentCount++;
             }
         }
-        getLog().debug( "Average indent: " + ( indentCount == 0 ? 2 : spaceIndentTotal / indentCount ) + " spaces, " + (
-            indentCount == 0
-                ? 0
-                : tabIndentTotal / indentCount ) + " tabs" );
-        String indent =
-            StringUtils.repeat( "\t", indentCount == 0 ? 0 : tabIndentTotal / indentCount ) + StringUtils.repeat( " ",
-                                                                                                                  indentCount
-                                                                                                                      == 0
-                                                                                                                      ? 2
-                                                                                                                      : spaceIndentTotal
-                                                                                                                          / indentCount );
+        final int averageSpaceIndent = indentCount == 0 ? 2 : spaceIndentTotal / indentCount;
+        final int averageTabIndent = indentCount == 0 ? 0 : tabIndentTotal / indentCount;
+        getLog().debug( "Average indent: " + averageSpaceIndent + " spaces, " + averageTabIndent + " tabs" );
+        String indent = StringUtils.repeat( "\t", averageTabIndent ) + StringUtils.repeat( " ", averageSpaceIndent );
+
         if ( first > last )
         {
             return input;
