@@ -44,7 +44,7 @@ import java.util.regex.Pattern;
 public class PomMojo
     extends AbstractMojo
 {
-    private static final String LS = System.getProperty("line.separator");
+    private static final String LS = System.getProperty( "line.separator" );
 
     /**
      * The Maven Project.
@@ -52,7 +52,7 @@ public class PomMojo
     @Component
     private MavenProject project;
 
-    private static final String[][] sequence =
+    private static final String[][] SEQUENCE =
         { { "modelVersion", "" }, { "parent", LS }, { "groupId", LS }, { "artifactId", "" }, { "version", "" },
             { "packaging", "" }, { "name", LS }, { "description", "" }, { "url", "" }, { "inceptionYear", "" },
             { "organization", "" }, { "licenses", "" }, { "developers", LS }, { "contributors", "" },
@@ -61,7 +61,7 @@ public class PomMojo
             { "repositories", LS }, { "pluginRepositories", "" }, { "dependencyManagement", LS },
             { "dependencies", "" }, { "build", LS }, { "reporting", LS }, { "profiles", LS }, };
 
-    private static final String[][] buildSequence =
+    private static final String[][] BUILD_SEQUENCE =
         { { "defaultGoal", "" }, { "sourceDirectory", "" }, { "scriptSourceDirectory", "" },
             { "testSourceDirectory", "" }, { "directory", "" }, { "outputDirectory", "" },
             { "testOutputDirectory", "" }, { "finalName", "" }, { "filters", "" }, { "resources", "" },
@@ -74,8 +74,8 @@ public class PomMojo
         {
             StringBuilder input = Utils.readXmlFile( project.getFile() );
             input = addXmlHeader( input );
-            input = sortSections( input, "/project/build", buildSequence );
-            input = sortSections( input, "/project", sequence );
+            input = sortSections( input, "/project/build", BUILD_SEQUENCE );
+            input = sortSections( input, "/project", SEQUENCE );
 
             Utils.writeXmlFile( project.getFile(), input );
         }
@@ -92,8 +92,10 @@ public class PomMojo
     private StringBuilder addXmlHeader( StringBuilder input )
                     throws XMLStreamException
     {
-        if (input.indexOf( "<?xml" ) != 0)
+        if ( input.indexOf( "<?xml" ) != 0 )
+        {
             input.insert( 0,  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LS );
+        }
 
         return input;
     }
