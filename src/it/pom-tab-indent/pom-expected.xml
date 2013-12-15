@@ -6,7 +6,7 @@
 	<artifactId>pom-space-indent</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
-	<description>Test of tidy:pom on a pom with space indents.</description>
+	<description>Test of tidy:pom on a pom with tab indents.</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
