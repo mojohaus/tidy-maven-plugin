@@ -49,8 +49,8 @@ public class PomMojo
     {
         try
         {
-            StringBuilder pom = Utils.readXmlFile( project.getFile() );
-            StringBuilder tidyPom = POM_TIDY.tidy( pom );
+            String pom = Utils.readXmlFile( project.getFile() );
+            String tidyPom = POM_TIDY.tidy( pom );
 
             Utils.writeXmlFile( project.getFile(), tidyPom );
         }

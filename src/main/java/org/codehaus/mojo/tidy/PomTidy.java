@@ -52,7 +52,7 @@ public class PomTidy
             { "testOutputDirectory", "" }, { "finalName", "" }, { "filters", "" }, { "resources", "" },
             { "testResources", "" }, { "pluginManagement", "" }, { "plugins", "" }, { "extensions", "" }, };
 
-    public StringBuilder tidy( StringBuilder pom )
+    public String tidy( String pom )
         throws XMLStreamException
     {
         pom = addXmlHeader( pom );
@@ -60,23 +60,22 @@ public class PomTidy
         return sortSections( pom, "/project", SEQUENCE );
     }
 
-    private StringBuilder addXmlHeader( StringBuilder input )
+    private String addXmlHeader( String input )
         throws XMLStreamException
     {
         if ( input.indexOf( "<?xml" ) != 0 )
         {
-            input.insert( 0, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LS );
+            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LS + input;
         }
 
         return input;
     }
 
-    private StringBuilder sortSections( StringBuilder input, String scope, String[][] sequence )
+    private String sortSections( String input, String scope, String[][] sequence )
         throws XMLStreamException
     {
         XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
         inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, Boolean.TRUE );
-        String inputStr = input.toString();
         int first = Integer.MAX_VALUE, last = Integer.MIN_VALUE;
         int outdent = -1;
         int[] starts = new int[sequence.length];
@@ -92,7 +91,7 @@ public class PomTidy
             int start = -1;
             starts[i] = ends[i] = -1;
 
-            XMLEventReader pom = inputFactory.createXMLEventReader( new StringReader( inputStr ) );
+            XMLEventReader pom = inputFactory.createXMLEventReader( new StringReader( input ) );
 
             while ( pom.hasNext() )
             {
@@ -162,7 +161,7 @@ public class PomTidy
             return input;
         }
         StringBuilder output = new StringBuilder( input.length() + 1024 );
-        output.append( inputStr.substring( 0, first ).trim() );
+        output.append( input.substring( 0, first ).trim() );
         String lastSep = null;
         for ( int i = 0; i < sequence.length; i++ )
         {
@@ -183,12 +182,12 @@ public class PomTidy
                 }
                 if ( l != -1 )
                 {
-                    output.append( inputStr.substring( ends[l], starts[i] ).trim() );
+                    output.append( input.substring( ends[l], starts[i] ).trim() );
                     lastSep = null;
                 }
                 output.append( LS );
                 output.append( indent );
-                output.append( inputStr.substring( starts[i], ends[i] ).trim() );
+                output.append( input.substring( starts[i], ends[i] ).trim() );
             }
         }
         output.append( LS );
@@ -196,12 +195,12 @@ public class PomTidy
         {
             output.append( StringUtils.repeat( " ", outdent ) );
         }
-        output.append( inputStr.substring( last ).trim() );
+        output.append( input.substring( last ).trim() );
         output.append( LS );
-        return output;
+        return output.toString();
     }
 
-    private int getSpaceIndent( StringBuilder input, int lastEnd, int pos )
+    private int getSpaceIndent( String input, int lastEnd, int pos )
     {
         int indent = 0;
         String posChar;
@@ -220,7 +219,7 @@ public class PomTidy
         return indent;
     }
 
-    private int getTabIndent( StringBuilder input, int lastEnd, int pos )
+    private int getTabIndent( String input, int lastEnd, int pos )
     {
         int indent = 0;
         String posChar;

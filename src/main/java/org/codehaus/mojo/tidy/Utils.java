@@ -40,14 +40,14 @@ public class Utils
      * @return String The content of the file.
      * @throws java.io.IOException when things go wrong.
      */
-    public static StringBuilder readXmlFile( File outFile )
+    public static String readXmlFile( File outFile )
         throws IOException
     {
         Reader reader = ReaderFactory.newXmlReader( outFile );
 
         try
         {
-            return new StringBuilder( IOUtil.toString( reader ) );
+            return IOUtil.toString( reader );
         }
         finally
         {
@@ -56,19 +56,19 @@ public class Utils
     }
 
     /**
-     * Writes a StringBuffer into a file.
+     * Writes a String into a file.
      *
      * @param outFile The file to read.
      * @param input   The contents of the file.
      * @throws java.io.IOException when things go wrong.
      */
-    public static void writeXmlFile( File outFile, StringBuilder input )
+    public static void writeXmlFile( File outFile, String input )
         throws IOException
     {
         Writer writer = WriterFactory.newXmlWriter( outFile );
         try
         {
-            IOUtil.copy( input.toString(), writer );
+            IOUtil.copy( input, writer );
         }
         finally
         {
