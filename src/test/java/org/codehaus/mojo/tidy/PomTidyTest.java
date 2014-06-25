@@ -39,7 +39,7 @@ public class PomTidyTest
     public static Iterable<Object[]> tests()
     {
         return asList( new Object[]{ "add-xml-declaration" }, new Object[]{ "complete-pom" },
-                       new Object[]{ "pom-space-indent" }, /* new Object[]{ "pom-tab-indent" } see MOJO-1990, */
+                       new Object[]{ "pom-space-indent" }, new Object[]{ "pom-tab-indent" },
                        new Object[]{ "pom-with-comments" }, new Object[]{ "pom-with-profiles" },
                        new Object[]{ "pom-with-reporting" } );
     }

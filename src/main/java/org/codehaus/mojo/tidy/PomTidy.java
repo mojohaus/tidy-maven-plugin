@@ -121,7 +121,7 @@ public class PomTidy
             XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
             inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, Boolean.TRUE );
             int first = Integer.MAX_VALUE, last = Integer.MIN_VALUE;
-            int outdent = -1;
+            String outdent = "";
             int[] starts = new int[sequence.length];
             int[] ends = new int[sequence.length];
             for ( int i = 0; i < sequence.length; i++ )
@@ -170,12 +170,9 @@ public class PomTidy
                         }
                         else if ( matchScopeRegex.matcher( path ).matches() )
                         {
-                            if ( outdent == -1 )
-                            {
-                                outdent = SPACE_INDENT_CALCULATOR.getIndent( input, start,
-                                                                             event.getLocation().getCharacterOffset()
-                                                                                 - 1 );
-                            }
+                            String before = input.substring( 0, event.getLocation().getCharacterOffset() );
+                            int posLineStart = Math.max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
+                            outdent = before.substring( posLineStart + 1 );
                             inMatchScope = false;
                             start = -1;
                         }
@@ -229,12 +226,7 @@ public class PomTidy
                 }
                 i += group.nodes.size();
             }
-            output.append( LS );
-            if ( outdent > 0 )
-            {
-                output.append( StringUtils.repeat( " ", outdent ) );
-            }
-            output.append( input.substring( last ).trim() );
+            addTextIfNotEmpty( output, outdent, input.substring( last ) );
             output.append( LS );
             return output.toString();
         }
