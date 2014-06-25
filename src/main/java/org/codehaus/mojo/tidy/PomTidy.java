@@ -27,8 +27,12 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.regex.Pattern;
+
+import static java.util.Arrays.asList;
 
 /**
  * Tidy up a POM into the canonical order.
@@ -37,44 +41,31 @@ public class PomTidy
 {
     private static final String LS = System.getProperty( "line.separator" );
 
-    private static final SectionSorter PROJECT_SORTER = new SectionSorter( "/project",
-                                                                           new String[][]{ { "modelVersion", "" },
-                                                                               { "parent", LS }, { "groupId", LS },
-                                                                               { "artifactId", "" }, { "version", "" },
-                                                                               { "packaging", "" }, { "name", LS },
-                                                                               { "description", "" }, { "url", "" },
-                                                                               { "inceptionYear", "" },
-                                                                               { "organization", "" },
-                                                                               { "licenses", "" }, { "developers", LS },
-                                                                               { "contributors", "" },
-                                                                               { "mailingLists", LS },
-                                                                               { "prerequisites", LS },
-                                                                               { "modules", LS }, { "scm", LS },
-                                                                               { "issueManagement", "" },
-                                                                               { "ciManagement", "" },
-                                                                               { "distributionManagement", "" },
-                                                                               { "properties", LS },
-                                                                               { "repositories", LS },
-                                                                               { "pluginRepositories", "" },
-                                                                               { "dependencyManagement", LS },
-                                                                               { "dependencies", "" }, { "build", LS },
-                                                                               { "reporting", LS },
-                                                                               { "profiles", LS }, } );
+    private static final SectionSorter PROJECT_SORTER =
+        new SectionSorter( "/project", new NodeGroup( "modelVersion" ), new NodeGroup( "parent" ),
+                           new NodeGroup( "groupId", "artifactId", "version", "packaging" ),
+                           new NodeGroup( "name", "description", "url", "inceptionYear", "organization", "licenses" ),
+                           new NodeGroup( "developers", "contributors" ), new NodeGroup( "mailingLists" ),
+                           new NodeGroup( "prerequisites" ), new NodeGroup( "modules" ),
+                           new NodeGroup( "scm", "issueManagement", "ciManagement", "distributionManagement" ),
+                           new NodeGroup( "properties" ), new NodeGroup( "repositories", "pluginRepositories" ),
+                           new NodeGroup( "dependencyManagement", "dependencies" ), new NodeGroup( "build" ),
+                           new NodeGroup( "reporting" ), new NodeGroup( "profiles" ) );
 
-    private static final SectionSorter BUILD_SORTER = new SectionSorter( "/project/build",
-                                                                         new String[][]{ { "defaultGoal", "" },
-                                                                             { "sourceDirectory", "" },
-                                                                             { "scriptSourceDirectory", "" },
-                                                                             { "testSourceDirectory", "" },
-                                                                             { "directory", "" },
-                                                                             { "outputDirectory", "" },
-                                                                             { "testOutputDirectory", "" },
-                                                                             { "finalName", "" }, { "filters", "" },
-                                                                             { "resources", "" },
-                                                                             { "testResources", "" },
-                                                                             { "pluginManagement", "" },
-                                                                             { "plugins", "" },
-                                                                             { "extensions", "" } } );
+    private static final SectionSorter BUILD_SORTER = new SectionSorter( "/project/build", new NodeGroup( "defaultGoal",
+                                                                                                          "sourceDirectory",
+                                                                                                          "scriptSourceDirectory",
+                                                                                                          "testSourceDirectory",
+                                                                                                          "directory",
+                                                                                                          "outputDirectory",
+                                                                                                          "testOutputDirectory",
+                                                                                                          "finalName",
+                                                                                                          "filters",
+                                                                                                          "resources",
+                                                                                                          "testResources",
+                                                                                                          "pluginManagement",
+                                                                                                          "plugins",
+                                                                                                          "extensions" ) );
 
     public String tidy( String pom )
         throws XMLStreamException
@@ -103,12 +94,25 @@ public class PomTidy
 
         final String scope;
 
-        final String[][] sequence;
+        final NodeGroup[] groups;
 
-        SectionSorter( String scope, String[][] sequence )
+        final String[] sequence;
+
+        SectionSorter( String scope, NodeGroup... groups )
         {
             this.scope = scope;
-            this.sequence = sequence;
+            this.groups = groups;
+            this.sequence = calculateSequence( groups );
+        }
+
+        String[] calculateSequence( NodeGroup[] groups )
+        {
+            List<String> sequence = new ArrayList<String>();
+            for ( NodeGroup group : groups )
+            {
+                sequence.addAll( group.nodes );
+            }
+            return sequence.toArray( new String[sequence.size()] );
         }
 
         String sortSections( String input )
@@ -123,7 +127,7 @@ public class PomTidy
             for ( int i = 0; i < sequence.length; i++ )
             {
                 Pattern matchScopeRegex = Pattern.compile( "\\Q" + scope + "\\E" );
-                Pattern matchTargetRegex = Pattern.compile( "\\Q" + scope + "\\E/\\Q" + sequence[i][0] + "\\E" );
+                Pattern matchTargetRegex = Pattern.compile( "\\Q" + scope + "\\E/\\Q" + sequence[i] + "\\E" );
 
                 Stack<String> stack = new Stack<String>();
                 String path = "";
@@ -205,33 +209,38 @@ public class PomTidy
             }
             StringBuilder output = new StringBuilder( input.length() + 1024 );
             output.append( input.substring( 0, first ).trim() );
-            String lastSep = null;
-            for ( int i = 0; i < sequence.length; i++ )
+            int i = 0;
+            boolean firstGroupStarted = false;
+            for ( NodeGroup group : groups )
             {
-                if ( lastSep == null || !StringUtils.isWhitespace( sequence[i][1] )
-                    || lastSep.length() < sequence[i][1].length() )
+                boolean groupStarted = false;
+                for ( int j = i; j < i + group.nodes.size(); ++j )
                 {
-                    output.append( lastSep = sequence[i][1] );
-                }
-                if ( starts[i] != -1 )
-                {
-                    int l = -1;
-                    for ( int k = 0; k < sequence.length; k++ )
+                    if ( starts[j] != -1 )
                     {
-                        if ( ends[k] != -1 && ( l == -1 || ends[l] < ends[k] ) && ends[k] < starts[i] )
+                        if ( firstGroupStarted && !groupStarted )
                         {
-                            l = k;
+                            output.append( LS );
                         }
+                        int l = -1;
+                        for ( int k = 0; k < sequence.length; k++ )
+                        {
+                            if ( ends[k] != -1 && ( l == -1 || ends[l] < ends[k] ) && ends[k] < starts[j] )
+                            {
+                                l = k;
+                            }
+                        }
+                        if ( l != -1 )
+                        {
+                            output.append( input.substring( ends[l], starts[j] ).trim() );
+                        }
+                        output.append( LS );
+                        output.append( indent );
+                        output.append( input.substring( starts[j], ends[j] ).trim() );
+                        firstGroupStarted = groupStarted = true;
                     }
-                    if ( l != -1 )
-                    {
-                        output.append( input.substring( ends[l], starts[i] ).trim() );
-                        lastSep = null;
-                    }
-                    output.append( LS );
-                    output.append( indent );
-                    output.append( input.substring( starts[i], ends[i] ).trim() );
                 }
+                i += group.nodes.size();
             }
             output.append( LS );
             if ( outdent > 0 )
@@ -270,6 +279,16 @@ public class PomTidy
                 pos--;
             }
             return indent;
+        }
+    }
+
+    private static class NodeGroup
+    {
+        final List<String> nodes;
+
+        NodeGroup( String... nodes )
+        {
+            this.nodes = asList( nodes );
         }
     }
 }

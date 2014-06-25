@@ -40,8 +40,8 @@ public class PomTidyTest
     {
         return asList( new Object[]{ "add-xml-declaration" }, new Object[]{ "complete-pom" },
                        new Object[]{ "pom-space-indent" }, /* new Object[]{ "pom-tab-indent" } see MOJO-1990, */
-                       new Object[]{ "pom-with-comments" }, new Object[]{ "pom-with-profiles" }
-                       /* new Object[]{ "pom-with-reporting" } see MOJO-1981 */ );
+                       new Object[]{ "pom-with-comments" }, new Object[]{ "pom-with-profiles" },
+                       new Object[]{ "pom-with-reporting" } );
     }
 
     @Parameter( 0 )
