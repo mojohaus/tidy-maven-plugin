@@ -222,18 +222,7 @@ public class PomTidy
                         {
                             output.append( LS );
                         }
-                        int l = -1;
-                        for ( int k = 0; k < sequence.length; k++ )
-                        {
-                            if ( ends[k] != -1 && ( l == -1 || ends[l] < ends[k] ) && ends[k] < starts[j] )
-                            {
-                                l = k;
-                            }
-                        }
-                        if ( l != -1 )
-                        {
-                            output.append( input.substring( ends[l], starts[j] ).trim() );
-                        }
+                        output.append( getPrecedingText( input, starts[j], ends ) );
                         output.append( LS );
                         output.append( indent );
                         output.append( input.substring( starts[j], ends[j] ).trim() );
@@ -250,6 +239,26 @@ public class PomTidy
             output.append( input.substring( last ).trim() );
             output.append( LS );
             return output.toString();
+        }
+
+        private String getPrecedingText( String pom, int start, int[] ends )
+        {
+            int l = -1;
+            for ( int k = 0; k < sequence.length; k++ )
+            {
+                if ( ends[k] != -1 && ( l == -1 || ends[l] < ends[k] ) && ends[k] < start )
+                {
+                    l = k;
+                }
+            }
+            if ( l != -1 )
+            {
+                return pom.substring( ends[l], start ).trim();
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 
