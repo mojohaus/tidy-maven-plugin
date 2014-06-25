@@ -37,6 +37,10 @@ public class PomTidy
 {
     private static final String LS = System.getProperty( "line.separator" );
 
+    private static final IndentCalculator SPACE_INDENT_CALCULATOR = new IndentCalculator( false );
+
+    private static final IndentCalculator TAB_INDENT_CALCULATOR = new IndentCalculator( true );
+
     private static final String[][] SEQUENCE =
         { { "modelVersion", "" }, { "parent", LS }, { "groupId", LS }, { "artifactId", "" }, { "version", "" },
             { "packaging", "" }, { "name", LS }, { "description", "" }, { "url", "" }, { "inceptionYear", "" },
@@ -128,7 +132,8 @@ public class PomTidy
                     {
                         if ( outdent == -1 )
                         {
-                            outdent = getSpaceIndent( input, start, event.getLocation().getCharacterOffset() - 1 );
+                            outdent = SPACE_INDENT_CALCULATOR.getIndent( input, start,
+                                                                         event.getLocation().getCharacterOffset() - 1 );
                         }
                         inMatchScope = false;
                         start = -1;
@@ -147,8 +152,8 @@ public class PomTidy
             if ( starts[i] != -1 )
             {
                 int pos = starts[i] - 1;
-                spaceIndentTotal += getSpaceIndent( input, lastEnd, pos );
-                tabIndentTotal += getTabIndent( input, lastEnd, pos );
+                spaceIndentTotal += SPACE_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
+                tabIndentTotal += TAB_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
                 indentCount++;
             }
         }
@@ -200,41 +205,32 @@ public class PomTidy
         return output.toString();
     }
 
-    private int getSpaceIndent( String input, int lastEnd, int pos )
+    private static class IndentCalculator
     {
-        int indent = 0;
-        String posChar;
-        while ( pos > lastEnd && StringUtils.isWhitespace( posChar = input.substring( pos, pos + 1 ) ) )
-        {
-            if ( "\n".equals( posChar ) || "\r".equals( posChar ) )
-            {
-                break;
-            }
-            if ( !"\t".equals( posChar ) )
-            {
-                indent++;
-            }
-            pos--;
-        }
-        return indent;
-    }
+        final boolean useTab;
 
-    private int getTabIndent( String input, int lastEnd, int pos )
-    {
-        int indent = 0;
-        String posChar;
-        while ( pos > lastEnd && StringUtils.isWhitespace( posChar = input.substring( pos, pos + 1 ) ) )
+        IndentCalculator( boolean useTab )
         {
-            if ( "\n".equals( posChar ) || "\r".equals( posChar ) )
-            {
-                break;
-            }
-            if ( "\t".equals( posChar ) )
-            {
-                indent++;
-            }
-            pos--;
+            this.useTab = useTab;
         }
-        return indent;
+
+        int getIndent( String input, int lastEnd, int pos )
+        {
+            int indent = 0;
+            String posChar;
+            while ( pos > lastEnd && StringUtils.isWhitespace( posChar = input.substring( pos, pos + 1 ) ) )
+            {
+                if ( "\n".equals( posChar ) || "\r".equals( posChar ) )
+                {
+                    break;
+                }
+                if ( "\t".equals( posChar ) == useTab )
+                {
+                    indent++;
+                }
+                pos--;
+            }
+            return indent;
+        }
     }
 }
