@@ -222,10 +222,8 @@ public class PomTidy
                         {
                             output.append( LS );
                         }
-                        output.append( getPrecedingText( input, starts[j], ends ) );
-                        output.append( LS );
-                        output.append( indent );
-                        output.append( input.substring( starts[j], ends[j] ).trim() );
+                        addTextIfNotEmpty( output, indent, getPrecedingText( input, starts[j], ends ) );
+                        addTextIfNotEmpty( output, indent, input.substring( starts[j], ends[j] ) );
                         firstGroupStarted = groupStarted = true;
                     }
                 }
@@ -253,11 +251,22 @@ public class PomTidy
             }
             if ( l != -1 )
             {
-                return pom.substring( ends[l], start ).trim();
+                return pom.substring( ends[l], start );
             }
             else
             {
                 return "";
+            }
+        }
+
+        private void addTextIfNotEmpty( StringBuilder output, String indent, String text )
+        {
+            String trimmedText = text.trim();
+            if ( trimmedText.length() != 0 )
+            {
+                output.append( LS );
+                output.append( indent );
+                output.append( trimmedText );
             }
         }
     }
