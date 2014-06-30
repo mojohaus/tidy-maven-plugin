@@ -25,7 +25,11 @@
 
 Usage
 
-  To use this plugin, simply invoke it on your project, e.g.
+ The following examples describe the basic usage of the Tidy Plugin.
+
+* Format the POM
+
+  To format the <<<pom.xml>>> execute the <<<pom>>> goal manually.
 
 ---
 mvn tidy:pom
@@ -69,3 +73,25 @@ mvn tidy:pom
   * <<</project/build/plugins>>>
 
   []
+
+* Checking for Tidy POM as Part of the Build
+
+   If you want to fail the build for a POM that is not formatted according to the <<<pom>>> goal, you must add an
+   execution of <<<tidy:check>>> to the <<<build>>> element.
+
+---
+<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>tidy-maven-plugin</artifactId>
+  <version>${project.version}</version>
+  <executions>
+    <execution>
+      <id>validate</id>
+      <phase>validate</phase>
+      <goals>
+        <goal>check</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+---

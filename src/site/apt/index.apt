@@ -30,13 +30,18 @@ Tidy Maven Plugin
 
 * Goals Overview
 
-  The Tidy Plugin has the following goal.
+  The Tidy Plugin has two goals.
 
   * {{{./pom-mojo.html}tidy:pom}} sorts the main sections of the <<<pom.xml>>> into the canonical order.
 
+  * {{{./check-mojo.html}tidy:check}} checks that the main sections of the <<<pom.xml>>> are in the canonical order.
+
 * Usage
 
-  To use this plugin, simply invoke it on your project, e.g.
+  General instructions on how to use the different goals of the Tidy Plugin can be found on the
+  {{{./usage.html}usage page}}.
+
+  To format the <<<pom.xml>>>, simply invoke it on your project, e.g.
 
 ---
 mvn tidy:pom
