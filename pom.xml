@@ -73,6 +73,8 @@
   </issueManagement>
 
   <properties>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
     <mavenVersion>2.2.1</mavenVersion>
     <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
   </properties>
