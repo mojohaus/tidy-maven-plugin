@@ -30,7 +30,7 @@
   </parent>
 
   <artifactId>tidy-maven-plugin</artifactId>
-  <version>1.0-beta-1</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Tidy Maven Plugin</name>
@@ -63,9 +63,9 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/mojo/tags/tidy-maven-plugin-1.0-beta-1</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/tags/tidy-maven-plugin-1.0-beta-1</developerConnection>
-    <url>http://fisheye.codehaus.org/browse/mojo/tags/tidy-maven-plugin-1.0-beta-1</url>
+    <connection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/tidy-maven-plugin</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mojo/trunk/mojo/tidy-maven-plugin</developerConnection>
+    <url>http://fisheye.codehaus.org/browse/mojo/trunk/mojo/tidy-maven-plugin</url>
   </scm>
   <issueManagement>
     <system>jira</system>
