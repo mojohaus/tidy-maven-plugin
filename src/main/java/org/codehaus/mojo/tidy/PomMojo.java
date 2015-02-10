@@ -19,48 +19,52 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.WriterFactory;
 
-import javax.xml.stream.XMLStreamException;
+import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 
 /**
  * Tidy up the <code>pom.xml</code> into the canonical order.
  */
 @Mojo( name = "pom", requiresProject = true, requiresDirectInvocation = true )
 public class PomMojo
-    extends AbstractMojo
+    extends TidyMojo
 {
-    private static final PomTidy POM_TIDY = new PomTidy();
-
-    /**
-     * The Maven Project.
-     */
-    @Component
-    private MavenProject project;
-
-    public void execute()
+    @Override
+    protected void executeForPom( String pom )
         throws MojoExecutionException, MojoFailureException
     {
         try
         {
-            String pom = Utils.readXmlFile( project.getFile() );
-            String tidyPom = POM_TIDY.tidy( pom );
-
-            Utils.writeXmlFile( project.getFile(), tidyPom );
+            String tidyPom = tidy( pom );
+            writePom( tidyPom );
         }
         catch ( IOException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
         }
-        catch ( XMLStreamException e )
+    }
+
+    /**
+     * Replaces the current POM with a new one.
+     */
+    private void writePom( String pom )
+        throws IOException
+    {
+        Writer writer = WriterFactory.newXmlWriter( project.getFile() );
+        try
         {
-            throw new MojoExecutionException( e.getMessage(), e );
+            IOUtil.copy( pom, writer );
+        }
+        finally
+        {
+            IOUtil.close( writer );
         }
     }
 }

@@ -19,16 +19,12 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.project.MavenProject;
 
 import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 
 /**
  * Checks that the <code>pom.xml</code> is tidy. Fails the build if <code>mvn tidy:pom</code> would
@@ -36,36 +32,17 @@ import java.io.IOException;
  */
 @Mojo( name = "check", defaultPhase = LifecyclePhase.VERIFY )
 public class CheckMojo
-    extends AbstractMojo
+    extends TidyMojo
 {
-    private static final PomTidy POM_TIDY = new PomTidy();
-
-    /**
-     * The Maven Project.
-     */
-    @Component
-    private MavenProject project;
-
-    public void execute()
+    @Override
+    protected void executeForPom( String pom )
         throws MojoExecutionException, MojoFailureException
     {
-        try
+        String tidyPom = tidy( pom );
+        if ( !pom.equals( tidyPom ) )
         {
-            String pom = Utils.readXmlFile( project.getFile() );
-            String tidyPom = POM_TIDY.tidy( pom );
-            if ( !pom.equals( tidyPom ) )
-            {
-                throw new MojoFailureException(
-                    "The POM violates the code style. Please format it by running `mvn tidy:pom`." );
-            }
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
-        }
-        catch ( XMLStreamException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+            throw new MojoFailureException(
+                "The POM violates the code style. Please format it by running `mvn tidy:pom`." );
         }
     }
 }
