@@ -32,16 +32,14 @@ import java.io.InputStream;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
+@RunWith( Parameterized.class )
 public class PomTidyTest
 {
-    @Parameters(name = "{0}")
-    public static Iterable<Object[]> tests()
+    @Parameters( name = "{0}" )
+    public static Iterable<String> tests()
     {
-        return asList( new Object[]{ "add-xml-declaration" }, new Object[]{ "complete-pom" },
-                       new Object[]{ "pom-space-indent" }, new Object[]{ "pom-tab-indent" },
-                       new Object[]{ "pom-with-comments" }, new Object[]{ "pom-with-profiles" },
-                       new Object[]{ "pom-with-reporting" } );
+        return asList( "add-xml-declaration", "complete-pom", "pom-space-indent", "pom-tab-indent", "pom-with-comments",
+                       "pom-with-profiles", "pom-with-reporting" );
     }
 
     @Parameter( 0 )
