@@ -30,7 +30,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
 
@@ -126,9 +125,6 @@ public class PomTidy
             int[] ends = new int[sequence.length];
             for ( int i = 0; i < sequence.length; i++ )
             {
-                Pattern matchScopeRegex = Pattern.compile( "\\Q" + scope + "\\E" );
-                Pattern matchTargetRegex = Pattern.compile( "\\Q" + scope + "\\E/\\Q" + sequence[i] + "\\E" );
-
                 Stack<String> stack = new Stack<String>();
                 String path = "";
                 boolean inMatchScope = false;
@@ -146,21 +142,21 @@ public class PomTidy
                         final String elementName = event.asStartElement().getName().getLocalPart();
                         path = path + "/" + elementName;
 
-                        if ( matchScopeRegex.matcher( path ).matches() )
+                        if ( scope.equals( path ) )
                         {
                             // we're in a new match scope
                             // reset any previous partial matches
                             inMatchScope = true;
                             start = -1;
                         }
-                        else if ( inMatchScope && matchTargetRegex.matcher( path ).matches() )
+                        else if ( inMatchScope && ( scope + "/" + sequence[i] ).equals( path ) )
                         {
                             start = event.getLocation().getCharacterOffset();
                         }
                     }
                     if ( event.isEndElement() )
                     {
-                        if ( matchTargetRegex.matcher( path ).matches() && start != -1 )
+                        if ( ( scope + "/" + sequence[i] ).equals( path ) && start != -1 )
                         {
                             starts[i] = start;
                             ends[i] = pom.peek().getLocation().getCharacterOffset();
@@ -168,7 +164,7 @@ public class PomTidy
                             last = Math.max( last, ends[i] );
                             break;
                         }
-                        else if ( matchScopeRegex.matcher( path ).matches() )
+                        else if ( scope.equals( path ) )
                         {
                             String before = input.substring( 0, event.getLocation().getCharacterOffset() );
                             int posLineStart = Math.max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
