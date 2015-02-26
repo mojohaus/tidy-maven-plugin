@@ -30,10 +30,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
 import static java.util.Arrays.asList;
+import static java.util.Arrays.fill;
 
 /**
  * Tidy up a POM into the canonical order.
@@ -125,58 +127,43 @@ public class PomTidy
             int first = Integer.MAX_VALUE, last = Integer.MIN_VALUE;
             String outdent = "";
             int[] starts = new int[sequence.length];
+            fill( starts, -1 );
             int[] ends = new int[sequence.length];
-            for ( int i = 0; i < sequence.length; i++ )
+            fill( ends, -1 );
+            Stack<String> stack = new Stack<String>();
+            String path = "";
+            XMLEventReader pom = inputFactory.createXMLEventReader( new StringReader( input ) );
+            while ( pom.hasNext() )
             {
-                Stack<String> stack = new Stack<String>();
-                String path = "";
-                boolean inMatchScope = false;
-                int start = -1;
-                starts[i] = ends[i] = -1;
-
-                XMLEventReader pom = inputFactory.createXMLEventReader( new StringReader( input ) );
-
-                while ( pom.hasNext() )
+                XMLEvent event = pom.nextEvent();
+                if ( event.isStartElement() )
                 {
-                    XMLEvent event = pom.nextEvent();
-                    if ( event.isStartElement() )
-                    {
-                        stack.push( path );
-                        final String elementName = event.asStartElement().getName().getLocalPart();
-                        path = path + "/" + elementName;
+                    stack.push( path );
+                    final String elementName = event.asStartElement().getName().getLocalPart();
+                    path = path + "/" + elementName;
 
-                        if ( scope.equals( path ) )
-                        {
-                            // we're in a new match scope
-                            // reset any previous partial matches
-                            inMatchScope = true;
-                            start = -1;
-                        }
-                        else if ( inMatchScope && ( scope + "/" + sequence[i] ).equals( path ) )
-                        {
-                            start = event.getLocation().getCharacterOffset();
-                        }
-                    }
-                    if ( event.isEndElement() )
+                    if ( hasToBeSorted( path ) )
                     {
-                        if ( ( scope + "/" + sequence[i] ).equals( path ) && start != -1 )
-                        {
-                            starts[i] = start;
-                            ends[i] = pom.peek().getLocation().getCharacterOffset();
-                            first = Math.min( first, starts[i] );
-                            last = Math.max( last, ends[i] );
-                            break;
-                        }
-                        else if ( scope.equals( path ) )
-                        {
-                            String before = input.substring( 0, event.getLocation().getCharacterOffset() );
-                            int posLineStart = Math.max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
-                            outdent = before.substring( posLineStart + 1 );
-                            inMatchScope = false;
-                            start = -1;
-                        }
-                        path = stack.pop();
+                        int i = getSequenceIndex( path );
+                        starts[i] = event.getLocation().getCharacterOffset();
+                        first = Math.min( first, starts[i] );
                     }
+                }
+                if ( event.isEndElement() )
+                {
+                    if ( hasToBeSorted( path ) )
+                    {
+                        int i = getSequenceIndex( path );
+                        ends[i] = pom.peek().getLocation().getCharacterOffset();
+                        last = Math.max( last, ends[i] );
+                    }
+                    else if ( scope.equals( path ) )
+                    {
+                        String before = input.substring( 0, event.getLocation().getCharacterOffset() );
+                        int posLineStart = Math.max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
+                        outdent = before.substring( posLineStart + 1 );
+                    }
+                    path = stack.pop();
                 }
             }
 
@@ -228,6 +215,33 @@ public class PomTidy
             addTextIfNotEmpty( output, outdent, input.substring( last ), format );
             output.append( format.getLineSeparator() );
             return output.toString();
+        }
+
+        private boolean hasToBeSorted( String path )
+        {
+            for ( String elementName : sequence )
+            {
+                if ( path.equals( scope + "/" + elementName ) )
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private int getSequenceIndex( String path )
+        {
+            String name = path.substring( path.lastIndexOf( "/" ) + 1 );
+            for ( int i = 0; i < sequence.length; i++ )
+            {
+                if ( name.equals( sequence[i] ) )
+                {
+                    return i;
+                }
+            }
+            throw new IllegalArgumentException(
+                "The path '" + path + " does not specify an element of the sequence " + Arrays.toString( sequence )
+                    + "." );
         }
 
         private String getPrecedingText( String pom, int start, int[] ends )
