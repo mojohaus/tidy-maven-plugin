@@ -19,6 +19,8 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
+import org.codehaus.mojo.tidy.format.Format;
+import org.codehaus.mojo.tidy.format.FormatIdentifier;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.stax2.XMLInputFactory2;
 
@@ -38,7 +40,7 @@ import static java.util.Arrays.asList;
  */
 public class PomTidy
 {
-    private static final String LS = System.getProperty( "line.separator" );
+    private static final FormatIdentifier FORMAT_IDENTIFIER = new FormatIdentifier();
 
     private static final SectionSorter PROJECT_SORTER =
         new SectionSorter( "/project", new NodeGroup( "modelVersion" ), new NodeGroup( "parent" ),
@@ -69,17 +71,18 @@ public class PomTidy
     public String tidy( String pom )
         throws XMLStreamException
     {
-        pom = addXmlHeader( pom );
-        pom = BUILD_SORTER.sortSections( pom );
-        return PROJECT_SORTER.sortSections( pom );
+        Format format = FORMAT_IDENTIFIER.identifyFormat( pom );
+        pom = addXmlHeader( pom, format );
+        pom = BUILD_SORTER.sortSections( pom, format );
+        return PROJECT_SORTER.sortSections( pom, format );
     }
 
-    private String addXmlHeader( String input )
+    private String addXmlHeader( String input, Format format )
         throws XMLStreamException
     {
         if ( input.indexOf( "<?xml" ) != 0 )
         {
-            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + LS + input;
+            return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + format.getLineSeparator() + input;
         }
 
         return input;
@@ -114,7 +117,7 @@ public class PomTidy
             return sequence.toArray( new String[sequence.size()] );
         }
 
-        String sortSections( String input )
+        String sortSections( String input, Format format )
             throws XMLStreamException
         {
             XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
@@ -213,17 +216,17 @@ public class PomTidy
                     {
                         if ( firstGroupStarted && !groupStarted )
                         {
-                            output.append( LS );
+                            output.append( format.getLineSeparator() );
                         }
-                        addTextIfNotEmpty( output, indent, getPrecedingText( input, starts[j], ends ) );
-                        addTextIfNotEmpty( output, indent, input.substring( starts[j], ends[j] ) );
+                        addTextIfNotEmpty( output, indent, getPrecedingText( input, starts[j], ends ), format );
+                        addTextIfNotEmpty( output, indent, input.substring( starts[j], ends[j] ), format );
                         firstGroupStarted = groupStarted = true;
                     }
                 }
                 i += group.nodes.size();
             }
-            addTextIfNotEmpty( output, outdent, input.substring( last ) );
-            output.append( LS );
+            addTextIfNotEmpty( output, outdent, input.substring( last ), format );
+            output.append( format.getLineSeparator() );
             return output.toString();
         }
 
@@ -247,12 +250,12 @@ public class PomTidy
             }
         }
 
-        private void addTextIfNotEmpty( StringBuilder output, String indent, String text )
+        private void addTextIfNotEmpty( StringBuilder output, String indent, String text, Format format )
         {
             String trimmedText = text.trim();
             if ( trimmedText.length() != 0 )
             {
-                output.append( LS );
+                output.append( format.getLineSeparator() );
                 output.append( indent );
                 output.append( trimmedText );
             }

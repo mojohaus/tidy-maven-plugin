@@ -39,7 +39,7 @@ public class PomTidyTest
     public static Iterable<String> tests()
     {
         return asList( "add-xml-declaration", "complete-pom", "pom-space-indent", "pom-tab-indent", "pom-with-comments",
-                       "pom-with-profiles", "pom-with-reporting" );
+                       "pom-with-crlf", "pom-with-profiles", "pom-with-reporting" );
     }
 
     @Parameter( 0 )
