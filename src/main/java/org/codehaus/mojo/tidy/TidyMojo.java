@@ -24,13 +24,12 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.ReaderFactory;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
+
+import static org.codehaus.plexus.util.FileUtils.fileRead;
 
 /**
  * An abstract base class for Mojos of the Tidy plugin. Handles common
@@ -74,8 +73,7 @@ public abstract class TidyMojo
     {
         try
         {
-            Reader reader = ReaderFactory.newXmlReader( project.getFile() );
-            return readPomFromReader( reader );
+            return fileRead( getPomFile() );
         }
         catch ( IOException e )
         {
@@ -84,19 +82,11 @@ public abstract class TidyMojo
     }
 
     /**
-     * Returns the POM that is provided by the reader.
+     * Returns the file of the POM.
      */
-    private String readPomFromReader( Reader reader )
-        throws IOException
+    protected File getPomFile()
     {
-        try
-        {
-            return IOUtil.toString( reader );
-        }
-        finally
-        {
-            IOUtil.close( reader );
-        }
+        return project.getFile();
     }
 
     /**

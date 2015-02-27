@@ -22,12 +22,10 @@ package org.codehaus.mojo.tidy;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.WriterFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
+
+import static org.codehaus.plexus.util.FileUtils.fileWrite;
 
 /**
  * Tidy up the <code>pom.xml</code> into the canonical order.
@@ -43,28 +41,11 @@ public class PomMojo
         try
         {
             String tidyPom = tidy( pom );
-            writePom( tidyPom );
+            fileWrite( getPomFile(), tidyPom );
         }
         catch ( IOException e )
         {
             throw new MojoExecutionException( e.getMessage(), e );
-        }
-    }
-
-    /**
-     * Replaces the current POM with a new one.
-     */
-    private void writePom( String pom )
-        throws IOException
-    {
-        Writer writer = WriterFactory.newXmlWriter( project.getFile() );
-        try
-        {
-            IOUtil.copy( pom, writer );
-        }
-        finally
-        {
-            IOUtil.close( writer );
         }
     }
 }
