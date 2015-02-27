@@ -45,7 +45,7 @@ public class PomMojo
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( e.getMessage(), e );
+            throw new MojoExecutionException( "Failed to write the tidy POM.", e );
         }
     }
 }

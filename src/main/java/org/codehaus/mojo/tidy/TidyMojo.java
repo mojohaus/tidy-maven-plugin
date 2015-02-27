@@ -77,7 +77,7 @@ public abstract class TidyMojo
         }
         catch ( IOException e )
         {
-            throw new MojoExecutionException( e.getMessage(), e );
+            throw new MojoExecutionException( "Failed to read the POM.", e );
         }
     }
 
