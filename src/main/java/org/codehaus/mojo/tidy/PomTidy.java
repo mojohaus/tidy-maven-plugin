@@ -36,6 +36,8 @@ import java.util.Stack;
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
+import static org.codehaus.plexus.util.StringUtils.countMatches;
+import static org.codehaus.plexus.util.StringUtils.isWhitespace;
 
 /**
  * Tidy up a POM into the canonical order.
@@ -92,10 +94,6 @@ public class PomTidy
 
     private static class SectionSorter
     {
-        static final IndentCalculator SPACE_INDENT_CALCULATOR = new IndentCalculator( false );
-
-        static final IndentCalculator TAB_INDENT_CALCULATOR = new IndentCalculator( true );
-
         final String scope;
 
         final NodeGroup[] groups;
@@ -232,20 +230,33 @@ public class PomTidy
             int spaceIndentTotal = 0;
             int tabIndentTotal = 0;
             int indentCount = 0;
-            int lastEnd = 0;
-            for ( int i = 0; i < sequence.length; i++ )
+            for ( int start : starts )
             {
-                if ( starts[i] != -1 )
+                if ( start != -1 )
                 {
-                    int pos = starts[i] - 1;
-                    spaceIndentTotal += SPACE_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
-                    tabIndentTotal += TAB_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
+                    String indent = calculateIndent( input, start );
+                    int numTabs = countMatches( indent, "\t" );
+                    spaceIndentTotal += ( indent.length() - numTabs );
+                    tabIndentTotal += numTabs;
                     indentCount++;
                 }
             }
             int averageSpaceIndent = indentCount == 0 ? 2 : spaceIndentTotal / indentCount;
             int averageTabIndent = indentCount == 0 ? 0 : tabIndentTotal / indentCount;
             return StringUtils.repeat( "\t", averageTabIndent ) + StringUtils.repeat( " ", averageSpaceIndent );
+        }
+
+        private String calculateIndent( String input, int startOfTag )
+        {
+            for ( int i = startOfTag; i > 1; --i )
+            {
+                String character = input.substring( i - 1, i );
+                if ( !isWhitespace( character ) || "\n".equals( character ) || "\r".equals( character ) )
+                {
+                    return input.substring( i, startOfTag );
+                }
+            }
+            return input;
         }
 
         private String getPrecedingText( String pom, int start, int[] ends )
@@ -277,35 +288,6 @@ public class PomTidy
                 output.append( indent );
                 output.append( trimmedText );
             }
-        }
-    }
-
-    private static class IndentCalculator
-    {
-        final boolean useTab;
-
-        IndentCalculator( boolean useTab )
-        {
-            this.useTab = useTab;
-        }
-
-        int getIndent( String input, int lastEnd, int pos )
-        {
-            int indent = 0;
-            String posChar;
-            while ( pos > lastEnd && StringUtils.isWhitespace( posChar = input.substring( pos, pos + 1 ) ) )
-            {
-                if ( "\n".equals( posChar ) || "\r".equals( posChar ) )
-                {
-                    break;
-                }
-                if ( "\t".equals( posChar ) == useTab )
-                {
-                    indent++;
-                }
-                pos--;
-            }
-            return indent;
         }
     }
 
