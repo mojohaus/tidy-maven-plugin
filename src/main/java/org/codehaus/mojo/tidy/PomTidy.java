@@ -229,20 +229,23 @@ public class PomTidy
         {
             int spaceIndentTotal = 0;
             int tabIndentTotal = 0;
-            int indentCount = 0;
+            int numNodesWithIndent = 0;
             for ( int start : starts )
             {
                 if ( start != -1 )
                 {
                     String indent = calculateIndent( input, start );
-                    int numTabs = countMatches( indent, "\t" );
-                    spaceIndentTotal += ( indent.length() - numTabs );
-                    tabIndentTotal += numTabs;
-                    indentCount++;
+                    if ( !indent.isEmpty() ) //only consider nodes that carry information about the desired indent
+                    {
+                        int numTabs = countMatches( indent, "\t" );
+                        spaceIndentTotal += ( indent.length() - numTabs );
+                        tabIndentTotal += numTabs;
+                        numNodesWithIndent++;
+                    }
                 }
             }
-            int averageSpaceIndent = indentCount == 0 ? 2 : spaceIndentTotal / indentCount;
-            int averageTabIndent = indentCount == 0 ? 0 : tabIndentTotal / indentCount;
+            int averageSpaceIndent = numNodesWithIndent == 0 ? 2 : spaceIndentTotal / numNodesWithIndent;
+            int averageTabIndent = numNodesWithIndent == 0 ? 0 : tabIndentTotal / numNodesWithIndent;
             return StringUtils.repeat( "\t", averageTabIndent ) + StringUtils.repeat( " ", averageSpaceIndent );
         }
 
