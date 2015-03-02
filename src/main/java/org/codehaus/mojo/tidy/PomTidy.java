@@ -38,6 +38,7 @@ import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
 import static org.codehaus.plexus.util.StringUtils.countMatches;
 import static org.codehaus.plexus.util.StringUtils.isWhitespace;
+import static org.codehaus.plexus.util.StringUtils.repeat;
 
 /**
  * Tidy up a POM into the canonical order.
@@ -227,26 +228,45 @@ public class PomTidy
 
         private String calculateIndent( String input, int[] starts )
         {
+            int numNodesWithSpaceIndent = 0;
+            int numNodesWithTabIndent = 0;
             int spaceIndentTotal = 0;
             int tabIndentTotal = 0;
-            int numNodesWithIndent = 0;
             for ( int start : starts )
             {
                 if ( start != -1 )
                 {
                     String indent = calculateIndent( input, start );
-                    if ( !indent.isEmpty() ) //only consider nodes that carry information about the desired indent
+                    if ( !indent.isEmpty() )
                     {
                         int numTabs = countMatches( indent, "\t" );
-                        spaceIndentTotal += ( indent.length() - numTabs );
-                        tabIndentTotal += numTabs;
-                        numNodesWithIndent++;
+                        if ( numTabs == indent.length() )
+                        {
+                            ++numNodesWithTabIndent;
+                            tabIndentTotal += numTabs;
+                        }
+                        else if ( !indent.contains( "\t" ) )
+                        {
+                            ++numNodesWithSpaceIndent;
+                            spaceIndentTotal += indent.length();
+                        }
                     }
                 }
             }
-            int averageSpaceIndent = numNodesWithIndent == 0 ? 2 : spaceIndentTotal / numNodesWithIndent;
-            int averageTabIndent = numNodesWithIndent == 0 ? 0 : tabIndentTotal / numNodesWithIndent;
-            return StringUtils.repeat( "\t", averageTabIndent ) + StringUtils.repeat( " ", averageSpaceIndent );
+            if ( numNodesWithSpaceIndent == 0 && numNodesWithTabIndent == 0 )
+            {
+                return "  ";
+            }
+            else if ( numNodesWithSpaceIndent > numNodesWithTabIndent )
+            {
+                int averageIndent = spaceIndentTotal / numNodesWithSpaceIndent;
+                return repeat( " ", averageIndent );
+            }
+            else
+            {
+                int averageIndent = tabIndentTotal / numNodesWithTabIndent;
+                return repeat( "\t", averageIndent );
+            }
         }
 
         private String calculateIndent( String input, int startOfTag )

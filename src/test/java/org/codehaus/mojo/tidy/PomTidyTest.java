@@ -38,8 +38,9 @@ public class PomTidyTest
     @Parameters( name = "{0}" )
     public static Iterable<String> tests()
     {
-        return asList( "add-xml-declaration", "complete-pom", "pom-space-indent", "pom-tab-indent", "pom-with-comments",
-                       "pom-with-crlf", "pom-with-line-without-indent", "pom-with-profiles", "pom-with-reporting" );
+        return asList( "add-xml-declaration", "complete-pom", "do-not-mix-tab-and-spaces", "pom-space-indent",
+                       "pom-tab-indent", "pom-with-comments", "pom-with-crlf", "pom-with-line-without-indent",
+                       "pom-with-profiles", "pom-with-reporting" );
     }
 
     @Parameter( 0 )
