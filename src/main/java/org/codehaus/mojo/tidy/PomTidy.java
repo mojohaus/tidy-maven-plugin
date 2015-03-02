@@ -167,24 +167,7 @@ public class PomTidy
                 }
             }
 
-            int spaceIndentTotal = 0;
-            int tabIndentTotal = 0;
-            int indentCount = 0;
-            int lastEnd = 0;
-            for ( int i = 0; i < sequence.length; i++ )
-            {
-                if ( starts[i] != -1 )
-                {
-                    int pos = starts[i] - 1;
-                    spaceIndentTotal += SPACE_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
-                    tabIndentTotal += TAB_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
-                    indentCount++;
-                }
-            }
-            final int averageSpaceIndent = indentCount == 0 ? 2 : spaceIndentTotal / indentCount;
-            final int averageTabIndent = indentCount == 0 ? 0 : tabIndentTotal / indentCount;
-            String indent =
-                StringUtils.repeat( "\t", averageTabIndent ) + StringUtils.repeat( " ", averageSpaceIndent );
+            String indent = calculateIndent( input, starts );
 
             if ( first > last )
             {
@@ -242,6 +225,27 @@ public class PomTidy
             throw new IllegalArgumentException(
                 "The path '" + path + " does not specify an element of the sequence " + Arrays.toString( sequence )
                     + "." );
+        }
+
+        private String calculateIndent( String input, int[] starts )
+        {
+            int spaceIndentTotal = 0;
+            int tabIndentTotal = 0;
+            int indentCount = 0;
+            int lastEnd = 0;
+            for ( int i = 0; i < sequence.length; i++ )
+            {
+                if ( starts[i] != -1 )
+                {
+                    int pos = starts[i] - 1;
+                    spaceIndentTotal += SPACE_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
+                    tabIndentTotal += TAB_INDENT_CALCULATOR.getIndent( input, lastEnd, pos );
+                    indentCount++;
+                }
+            }
+            int averageSpaceIndent = indentCount == 0 ? 2 : spaceIndentTotal / indentCount;
+            int averageTabIndent = indentCount == 0 ? 0 : tabIndentTotal / indentCount;
+            return StringUtils.repeat( "\t", averageTabIndent ) + StringUtils.repeat( " ", averageSpaceIndent );
         }
 
         private String getPrecedingText( String pom, int start, int[] ends )
