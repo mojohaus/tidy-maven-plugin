@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import static java.lang.Math.max;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
 import static org.codehaus.plexus.util.StringUtils.countMatches;
@@ -154,12 +155,12 @@ public class PomTidy
                     {
                         int i = getSequenceIndex( path );
                         ends[i] = pom.peek().getLocation().getCharacterOffset();
-                        last = Math.max( last, ends[i] );
+                        last = max( last, ends[i] );
                     }
                     else if ( scope.equals( path ) )
                     {
                         String before = input.substring( 0, event.getLocation().getCharacterOffset() );
-                        int posLineStart = Math.max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
+                        int posLineStart = max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
                         outdent = before.substring( posLineStart + 1 );
                     }
                     path = stack.pop();
@@ -284,17 +285,17 @@ public class PomTidy
 
         private String getPrecedingText( String pom, int start, int[] ends )
         {
-            int l = -1;
-            for ( int k = 0; k < sequence.length; k++ )
+            int startPrecedingText = -1;
+            for ( int end : ends )
             {
-                if ( ends[k] != -1 && ( l == -1 || ends[l] < ends[k] ) && ends[k] < start )
+                if ( end < start )
                 {
-                    l = k;
+                    startPrecedingText = max( startPrecedingText, end );
                 }
             }
-            if ( l != -1 )
+            if ( startPrecedingText != -1 )
             {
-                return pom.substring( ends[l], start );
+                return pom.substring( startPrecedingText, start );
             }
             else
             {
