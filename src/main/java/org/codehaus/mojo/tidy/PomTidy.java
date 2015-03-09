@@ -48,7 +48,7 @@ public class PomTidy
 {
     private static final FormatIdentifier FORMAT_IDENTIFIER = new FormatIdentifier();
 
-    private static final SectionSorter PROJECT_SORTER =
+    private static final List<SectionSorter> SECTION_SORTERS = asList(
         new SectionSorter( "/project", new NodeGroup( "modelVersion" ), new NodeGroup( "parent" ),
                            new NodeGroup( "groupId", "artifactId", "version", "packaging" ),
                            new NodeGroup( "name", "description", "url", "inceptionYear", "organization", "licenses" ),
@@ -57,30 +57,19 @@ public class PomTidy
                            new NodeGroup( "scm", "issueManagement", "ciManagement", "distributionManagement" ),
                            new NodeGroup( "properties" ), new NodeGroup( "repositories", "pluginRepositories" ),
                            new NodeGroup( "dependencyManagement", "dependencies" ), new NodeGroup( "build" ),
-                           new NodeGroup( "reporting" ), new NodeGroup( "profiles" ) );
-
-    private static final SectionSorter BUILD_SORTER = new SectionSorter( "/project/build", new NodeGroup( "defaultGoal",
-                                                                                                          "sourceDirectory",
-                                                                                                          "scriptSourceDirectory",
-                                                                                                          "testSourceDirectory",
-                                                                                                          "directory",
-                                                                                                          "outputDirectory",
-                                                                                                          "testOutputDirectory",
-                                                                                                          "finalName",
-                                                                                                          "filters",
-                                                                                                          "resources",
-                                                                                                          "testResources",
-                                                                                                          "pluginManagement",
-                                                                                                          "plugins",
-                                                                                                          "extensions" ) );
+                           new NodeGroup( "reporting" ), new NodeGroup( "profiles" ) ),
+        new SectionSorter( "/project/build", new NodeGroup( "defaultGoal", "sourceDirectory", "scriptSourceDirectory",
+                                                            "testSourceDirectory", "directory", "outputDirectory",
+                                                            "testOutputDirectory", "finalName", "filters", "resources",
+                                                            "testResources", "pluginManagement", "plugins",
+                                                            "extensions" ) ) );
 
     public String tidy( String pom )
         throws XMLStreamException
     {
         Format format = FORMAT_IDENTIFIER.identifyFormat( pom );
         pom = addXmlHeader( pom, format );
-        pom = BUILD_SORTER.sortSections( pom, format );
-        pom = PROJECT_SORTER.sortSections( pom, format );
+        pom = applySectionSorters( pom, format );
         return pom.trim() + format.getLineSeparator();
     }
 
@@ -93,6 +82,16 @@ public class PomTidy
         }
 
         return input;
+    }
+
+    private String applySectionSorters( String pom, Format format )
+        throws XMLStreamException
+    {
+        for ( SectionSorter sorter : SECTION_SORTERS )
+        {
+            pom = sorter.sortSections( pom, format );
+        }
+        return pom;
     }
 
     private static class SectionSorter
