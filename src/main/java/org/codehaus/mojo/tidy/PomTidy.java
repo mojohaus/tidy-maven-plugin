@@ -62,7 +62,10 @@ public class PomTidy
                                                             "testSourceDirectory", "directory", "outputDirectory",
                                                             "testOutputDirectory", "finalName", "filters", "resources",
                                                             "testResources", "pluginManagement", "plugins",
-                                                            "extensions" ) ) );
+                                                            "extensions" ) ),
+        new SectionSorter( "dependency", new NodeGroup( "groupId", "artifactId", "version" ) ),
+        new SectionSorter( "parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
+        new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ) );
 
     public String tidy( String pom )
         throws XMLStreamException
@@ -132,7 +135,7 @@ public class PomTidy
                 if ( event.isStartElement() )
                 {
                     path += "/" + event.asStartElement().getName().getLocalPart();
-                    if ( path.equals( scope ) )
+                    if ( isStartElementOfScope( path ) )
                     {
                         int pos = getPosOfNextEvent( reader );
                         tidyPom.append( pom.substring( posFirstUnformatted, pos ) );
@@ -156,6 +159,18 @@ public class PomTidy
             XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
             inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, true );
             return inputFactory.createXMLEventReader( new StringReader( pom ) );
+        }
+
+        private boolean isStartElementOfScope( String path )
+        {
+            if ( scope.startsWith( "/" ) )
+            {
+                return path.equals( scope );
+            }
+            else
+            {
+                return path.endsWith( scope );
+            }
         }
 
         private String formatSection( XMLEventReader reader, String pom, Format format )
