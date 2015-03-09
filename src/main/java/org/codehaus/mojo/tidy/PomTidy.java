@@ -21,9 +21,9 @@ package org.codehaus.mojo.tidy;
 
 import org.codehaus.mojo.tidy.format.Format;
 import org.codehaus.mojo.tidy.format.FormatIdentifier;
-import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.stax2.XMLInputFactory2;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -32,9 +32,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
 import static org.codehaus.plexus.util.StringUtils.countMatches;
@@ -80,7 +80,8 @@ public class PomTidy
         Format format = FORMAT_IDENTIFIER.identifyFormat( pom );
         pom = addXmlHeader( pom, format );
         pom = BUILD_SORTER.sortSections( pom, format );
-        return PROJECT_SORTER.sortSections( pom, format );
+        pom = PROJECT_SORTER.sortSections( pom, format );
+        return pom.trim() + format.getLineSeparator();
     }
 
     private String addXmlHeader( String input, Format format )
@@ -119,92 +120,104 @@ public class PomTidy
             return sequence.toArray( new String[sequence.size()] );
         }
 
-        String sortSections( String input, Format format )
+        String sortSections( String pom, Format format )
+            throws XMLStreamException
+        {
+            XMLEventReader reader = createEventReaderForPom( pom );
+            String path = "";
+            int posFirstUnformatted = 0;
+            StringBuilder tidyPom = new StringBuilder();
+            while ( reader.hasNext() )
+            {
+                XMLEvent event = reader.nextEvent();
+                if ( event.isStartElement() )
+                {
+                    path += "/" + event.asStartElement().getName().getLocalPart();
+                    if ( path.equals( scope ) )
+                    {
+                        int pos = getPosOfNextEvent( reader );
+                        tidyPom.append( pom.substring( posFirstUnformatted, pos ) );
+                        tidyPom.append( formatSection( reader, pom, format ) );
+                        path = substringAfterLast( path, "/" );
+                        posFirstUnformatted = getPosOfNextEvent( reader );
+                    }
+                }
+                else if ( event.isEndElement() )
+                {
+                    path = substringAfterLast( path, "/" );
+                }
+            }
+            tidyPom.append( pom.substring( posFirstUnformatted ) );
+            return tidyPom.toString();
+        }
+
+        private XMLEventReader createEventReaderForPom( String pom )
             throws XMLStreamException
         {
             XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
-            inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, Boolean.TRUE );
-            int first = Integer.MAX_VALUE, last = Integer.MIN_VALUE;
-            String outdent = "";
-            int[] starts = new int[sequence.length];
-            fill( starts, -1 );
-            int[] ends = new int[sequence.length];
-            fill( ends, -1 );
-            Stack<String> stack = new Stack<String>();
-            String path = "";
-            XMLEventReader pom = inputFactory.createXMLEventReader( new StringReader( input ) );
-            while ( pom.hasNext() )
-            {
-                XMLEvent event = pom.nextEvent();
-                if ( event.isStartElement() )
-                {
-                    stack.push( path );
-                    final String elementName = event.asStartElement().getName().getLocalPart();
-                    path = path + "/" + elementName;
-
-                    if ( hasToBeSorted( path ) )
-                    {
-                        int i = getSequenceIndex( path );
-                        starts[i] = event.getLocation().getCharacterOffset();
-                        first = Math.min( first, starts[i] );
-                    }
-                }
-                if ( event.isEndElement() )
-                {
-                    if ( hasToBeSorted( path ) )
-                    {
-                        int i = getSequenceIndex( path );
-                        ends[i] = pom.peek().getLocation().getCharacterOffset();
-                        last = max( last, ends[i] );
-                    }
-                    else if ( scope.equals( path ) )
-                    {
-                        String before = input.substring( 0, event.getLocation().getCharacterOffset() );
-                        int posLineStart = max( before.lastIndexOf( '\n' ), before.lastIndexOf( '\n' ) );
-                        outdent = before.substring( posLineStart + 1 );
-                    }
-                    path = stack.pop();
-                }
-            }
-
-            String indent = calculateIndent( input, starts );
-
-            if ( first > last )
-            {
-                return input;
-            }
-            StringBuilder output = new StringBuilder( input.length() + 1024 );
-            output.append( input.substring( 0, first ).trim() );
-            int i = 0;
-            boolean firstGroupStarted = false;
-            for ( NodeGroup group : groups )
-            {
-                boolean groupStarted = false;
-                for ( int j = i; j < i + group.nodes.size(); ++j )
-                {
-                    if ( starts[j] != -1 )
-                    {
-                        if ( firstGroupStarted && !groupStarted )
-                        {
-                            output.append( format.getLineSeparator() );
-                        }
-                        addTextIfNotEmpty( output, indent, getPrecedingText( input, starts[j], ends ), format );
-                        addTextIfNotEmpty( output, indent, input.substring( starts[j], ends[j] ), format );
-                        firstGroupStarted = groupStarted = true;
-                    }
-                }
-                i += group.nodes.size();
-            }
-            addTextIfNotEmpty( output, outdent, input.substring( last ), format );
-            output.append( format.getLineSeparator() );
-            return output.toString();
+            inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, true );
+            return inputFactory.createXMLEventReader( new StringReader( pom ) );
         }
 
-        private boolean hasToBeSorted( String path )
+        private String formatSection( XMLEventReader reader, String pom, Format format )
+            throws XMLStreamException
         {
+            int startOfSection = getPosOfNextEvent( reader );
+            int[] starts = new int[sequence.length];
+            int[] ends = new int[sequence.length];
+            XMLEvent endScope = calculateStartsAndEnds( reader, starts, ends );
+            return formatSection( reader, pom, format, startOfSection, starts, ends, endScope );
+        }
+
+        private XMLEvent calculateStartsAndEnds( XMLEventReader reader, int[] starts, int[] ends )
+            throws XMLStreamException
+        {
+            fill( starts, Integer.MAX_VALUE );
+            fill( ends, -1 );
+            int level = 0;
+            while ( reader.hasNext() )
+            {
+                XMLEvent event = reader.nextEvent();
+                if ( event.isStartElement() )
+                {
+                    ++level;
+                    if ( level == 1 )
+                    {
+                        QName name = event.asStartElement().getName();
+                        if ( hasToBeSorted( name ) )
+                        {
+                            int i = getSequenceIndex( name );
+                            starts[i] = event.getLocation().getCharacterOffset();
+                        }
+                    }
+                }
+                else if ( event.isEndElement() )
+                {
+                    if ( level == 0 )
+                    {
+                        return event;
+                    }
+                    else if ( level == 1 )
+                    {
+                        QName name = event.asEndElement().getName();
+                        if ( hasToBeSorted( name ) )
+                        {
+                            int i = getSequenceIndex( name );
+                            ends[i] = getPosOfNextEvent( reader );
+                        }
+                    }
+                    --level;
+                }
+            }
+            throw new RuntimeException( "End element missing." );
+        }
+
+        private boolean hasToBeSorted( QName nodeName )
+        {
+            String name = nodeName.getLocalPart();
             for ( String elementName : sequence )
             {
-                if ( path.equals( scope + "/" + elementName ) )
+                if ( name.equals( elementName ) )
                 {
                     return true;
                 }
@@ -212,9 +225,9 @@ public class PomTidy
             return false;
         }
 
-        private int getSequenceIndex( String path )
+        private int getSequenceIndex( QName nodeName )
         {
-            String name = path.substring( path.lastIndexOf( "/" ) + 1 );
+            String name = nodeName.getLocalPart();
             for ( int i = 0; i < sequence.length; i++ )
             {
                 if ( name.equals( sequence[i] ) )
@@ -223,8 +236,71 @@ public class PomTidy
                 }
             }
             throw new IllegalArgumentException(
-                "The path '" + path + " does not specify an element of the sequence " + Arrays.toString( sequence )
+                "The path '" + nodeName + " does not specify an element of the sequence " + Arrays.toString( sequence )
                     + "." );
+        }
+
+        private String formatSection( XMLEventReader reader, String pom, Format format, int startOfSection,
+                                      int[] starts, int[] ends, XMLEvent endScope )
+            throws XMLStreamException
+        {
+            String outdent = calculateOutdent( pom, endScope );
+            String indent = calculateIndent( pom, starts );
+            int first = calculateFirst( starts, pom );
+            StringBuilder output = new StringBuilder();
+            output.append( pom.substring( startOfSection, first ).trim() );
+            int i = 0;
+            boolean firstGroupStarted = false;
+            for ( NodeGroup group : groups )
+            {
+                boolean groupStarted = false;
+                for ( String node : group.nodes )
+                {
+                    if ( starts[i] != Integer.MAX_VALUE )
+                    {
+                        if ( firstGroupStarted && !groupStarted )
+                        {
+                            output.append( format.getLineSeparator() );
+                        }
+                        addTextIfNotEmpty( output, indent, getPrecedingText( pom, starts[i], ends ), format );
+                        addTextIfNotEmpty( output, indent, pom.substring( starts[i], ends[i] ), format );
+                        firstGroupStarted = groupStarted = true;
+                    }
+                    ++i;
+                }
+            }
+            int last = calculateLast( ends );
+            int afterSection = getPosOfNextEvent( reader );
+            int offsetEndElement = endScope.getLocation().getCharacterOffset();
+            addTextIfNotEmpty( output, indent, pom.substring( last, offsetEndElement ), format );
+            addTextIfNotEmpty( output, outdent, pom.substring( offsetEndElement, afterSection ), format );
+            return output.toString();
+        }
+
+        private String calculateOutdent( String pom, XMLEvent endScope )
+        {
+            String before = pom.substring( 0, endScope.getLocation().getCharacterOffset() );
+            return substringAfterLast( before, "\n" );
+        }
+
+        private int calculateFirst( int[] starts, String pom )
+        {
+            int first = pom.length();
+            for ( int start : starts )
+            {
+                first = min( first, start );
+            }
+            return first;
+        }
+
+        private int calculateLast( int[] ends )
+        {
+            int last = 0;
+            for ( int end : ends )
+            {
+                last = max( last, end );
+            }
+            return last;
         }
 
         private String calculateIndent( String input, int[] starts )
@@ -235,7 +311,7 @@ public class PomTidy
             int tabIndentTotal = 0;
             for ( int start : starts )
             {
-                if ( start != -1 )
+                if ( start != Integer.MAX_VALUE )
                 {
                     String indent = calculateIndent( input, start );
                     if ( !indent.isEmpty() )
@@ -312,6 +388,18 @@ public class PomTidy
                 output.append( indent );
                 output.append( trimmedText );
             }
+        }
+
+        private int getPosOfNextEvent( XMLEventReader reader )
+            throws XMLStreamException
+        {
+            return reader.peek().getLocation().getCharacterOffset();
+        }
+
+        private String substringAfterLast( String str, String separator )
+        {
+            int beginIndex = str.lastIndexOf( separator ) + 1;
+            return str.substring( beginIndex );
         }
     }
 
