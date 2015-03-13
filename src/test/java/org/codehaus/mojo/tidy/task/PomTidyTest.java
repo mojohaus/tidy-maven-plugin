@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tidy;
+package org.codehaus.mojo.tidy.task;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

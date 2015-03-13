@@ -24,6 +24,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.tidy.task.PomTidy;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.File;

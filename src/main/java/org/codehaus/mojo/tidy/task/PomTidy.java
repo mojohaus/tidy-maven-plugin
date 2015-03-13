@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tidy;
+package org.codehaus.mojo.tidy.task;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,8 +19,6 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
-import org.codehaus.mojo.tidy.format.Format;
-import org.codehaus.mojo.tidy.format.FormatIdentifier;
 import org.codehaus.stax2.XMLInputFactory2;
 
 import javax.xml.namespace.QName;

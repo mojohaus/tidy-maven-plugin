@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tidy.format;
+package org.codehaus.mojo.tidy.task;
 
 /**
  * Specification of the output format used by the Tidy plugin.

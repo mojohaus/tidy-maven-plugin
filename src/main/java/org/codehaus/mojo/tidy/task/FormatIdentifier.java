@@ -1,4 +1,4 @@
-package org.codehaus.mojo.tidy.format;
+package org.codehaus.mojo.tidy.task;
 
 import java.util.List;
 
