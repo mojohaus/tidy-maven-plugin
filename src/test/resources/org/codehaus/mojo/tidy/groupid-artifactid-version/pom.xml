@@ -15,6 +15,14 @@
 
   <description>Test of tidy:pom on a pom with XML comments.</description>
 
+  <distributionManagement>
+    <relocation>
+      <artifactId>dummy-artifact</artifactId>
+      <version>1.0.0</version>
+      <groupId>dummy.group.id</groupId>
+    </relocation>
+  </distributionManagement>
+
   <!-- Hello world -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,6 +33,12 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
       <groupId>junit</groupId>
+      <exclusions>
+        <exclusion>
+          <artifactId>hamcrest-core</artifactId>
+          <groupId>org.hamcrest</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -36,5 +50,12 @@
         <groupId>dummy.group.id</groupId>
       </plugin>
     </plugins>
+    <extensions>
+      <extension>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-6</version>
+        <groupId>org.apache.maven.wagon</groupId>
+      </extension>
+    </extensions>
   </build>
 </project>

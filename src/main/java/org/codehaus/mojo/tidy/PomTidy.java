@@ -64,8 +64,11 @@ public class PomTidy
                                                             "testResources", "pluginManagement", "plugins",
                                                             "extensions" ) ),
         new SectionSorter( "dependency", new NodeGroup( "groupId", "artifactId", "version" ) ),
+        new SectionSorter( "exclusion", new NodeGroup( "groupId", "artifactId" ) ),
+        new SectionSorter( "extension", new NodeGroup( "groupId", "artifactId", "version" ) ),
         new SectionSorter( "parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
-        new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ) );
+        new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ),
+        new SectionSorter( "relocation", new NodeGroup( "groupId", "artifactId", "version" ) ) );
 
     public String tidy( String pom )
         throws XMLStreamException
