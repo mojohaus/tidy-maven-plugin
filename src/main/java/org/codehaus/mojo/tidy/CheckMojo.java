@@ -24,8 +24,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-import javax.xml.stream.XMLStreamException;
-
 /**
  * Checks that the <code>pom.xml</code> is tidy. Fails the build if <code>mvn tidy:pom</code> would
  * create a different <code>pom.xml</code> than the current one.
