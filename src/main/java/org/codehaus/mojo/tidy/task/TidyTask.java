@@ -19,34 +19,21 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
+import javax.xml.stream.XMLStreamException;
 
 /**
- * Identifies the output format for a given POM. It tries to find a
- * format that is similar to the current format.
+ * A single task that tidies a POM.
  */
-class FormatIdentifier
+interface TidyTask
 {
-    private static final List<String> LINE_SEPARATORS = asList( "\r\n", "\n", "\r" );
-
     /**
-     * Identifies the output format for the given POM.
+     * Tidies the POM.
      *
-     * @param pom the POM.
-     * @return the output format.
+     * @param pom    the POM as string.
+     * @param format the expected format of the POM.
+     * @return the tidy POM.
+     * @throws XMLStreamException
      */
-    Format identifyFormat( String pom )
-    {
-        for ( String separator : LINE_SEPARATORS )
-        {
-            if ( pom.contains( separator ) )
-            {
-                return new Format( separator );
-            }
-        }
-
-        throw new IllegalArgumentException( "The pom.xml has no known line separator." );
-    }
+    String tidyPom( String pom, Format format )
+        throws XMLStreamException;
 }
