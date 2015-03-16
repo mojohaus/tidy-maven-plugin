@@ -19,14 +19,10 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
-import org.codehaus.stax2.XMLInputFactory2;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +31,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.fill;
+import static org.codehaus.mojo.tidy.task.XMLEventReaderFactory.createEventReaderForPom;
 import static org.codehaus.plexus.util.StringUtils.countMatches;
 import static org.codehaus.plexus.util.StringUtils.isWhitespace;
 import static org.codehaus.plexus.util.StringUtils.repeat;
@@ -137,14 +134,6 @@ class EnsureOrderAndIndent
             }
             tidyPom.append( pom.substring( posFirstUnformatted ) );
             return tidyPom.toString();
-        }
-
-        private XMLEventReader createEventReaderForPom( String pom )
-            throws XMLStreamException
-        {
-            XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
-            inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, true );
-            return inputFactory.createXMLEventReader( new StringReader( pom ) );
         }
 
         private boolean isStartElementOfScope( String path )
