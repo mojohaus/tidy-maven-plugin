@@ -22,9 +22,12 @@ To format the `pom.xml` execute the `pom` goal manually.
 
     mvn tidy:pom
 
-The `pom.xml` file will be rewritten into the
-[canonical ordering](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention),
-keeping as much as possible of the remainder of the `pom.xml` as is.
+The `pom.xml` file will
+
+* be rewritten according to the
+[POM Code Convention](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
+of the Maven team.
+* have the nodes `groupId`, `artifactId` and `version` always in this order.
 
 Note: It is recommended that you use your IDE or other formatting tools to
 ensure that your `pom.xml` is indented correctly.

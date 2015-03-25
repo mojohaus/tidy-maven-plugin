@@ -14,24 +14,28 @@
 [//]: # (under the License.)
 ## Tidy Maven Plugin
 
-The Tidy Plugin is used when you want to sort the sections of a `pom.xml` into the canonical order.
+The Tidy Plugin tidies up a project's `pom.xml` and optionally verifies
+that it is tidy.
 
 ### Goals Overview
 
 The Tidy Plugin has two goals.
 
-* [tidy:pom](./pom-mojo.html) sorts the main sections of the `pom.xml` into the canonical order.
-* [tidy:check](./check-mojo.html}tidy:check) checks that the main sections of the `pom.xml` are in the canonical order.
+* [tidy:pom](./pom-mojo.html) tidies up the project's `pom.xml`.
+* [tidy:check](./check-mojo.html}tidy:check) checks that the project's `pom.xml` is tidy.
 
 ### Usage
 
 General instructions on how to use the different goals of the Tidy Plugin can
 be found on the [usage page](./usage.html).
 
-To format the `pom.xml`, simply invoke it on your project, e.g.
+To tidy up the `pom.xml`, simply invoke it on your project, e.g.
 
     mvn tidy:pom
 
-The `pom.xml` file will be rewritten into the
-[canonical ordering](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention),
-keeping as much as possible of the remainder of the `pom.xml` as is.
+The `pom.xml` file will
+
+* be rewritten according to the
+[POM Code Convention](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
+of the Maven team.
+* have the nodes `groupId`, `artifactId` and `version` always in this order.
