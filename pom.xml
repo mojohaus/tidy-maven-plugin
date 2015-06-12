@@ -38,6 +38,7 @@
     Tidy Plugin for Maven. The Tidy plugin provides goals for tidying up
     your source code.
   </description>
+  <url>http://www.mojohaus.org/tidy-maven-plugin/</url>
   <inceptionYear>2011</inceptionYear>
   <licenses>
     <license>
