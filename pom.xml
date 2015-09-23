@@ -64,7 +64,7 @@
   </prerequisites>
 
   <scm>
-    <connection>scm:git:git@github.com:mojohaus/tidy-maven-plugin.git</connection>
+    <connection>scm:git:https://github.com/mojohaus/tidy-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/tidy-maven-plugin.git</developerConnection>
     <url>https://github.com/mojohaus/tidy-maven-plugin</url>
   </scm>
