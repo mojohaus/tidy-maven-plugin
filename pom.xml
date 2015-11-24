@@ -82,7 +82,7 @@
   <properties>
     <mojo.java.target>1.6</mojo.java.target>
     <mavenVersion>2.2.1</mavenVersion>
-    <mavenPluginPluginVersion>3.2</mavenPluginPluginVersion>
+    <mavenPluginPluginVersion>3.4</mavenPluginPluginVersion>
   </properties>
 
   <dependencyManagement>
