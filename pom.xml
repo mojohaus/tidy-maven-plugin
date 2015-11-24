@@ -82,7 +82,6 @@
   <properties>
     <mojo.java.target>1.6</mojo.java.target>
     <mavenVersion>2.2.1</mavenVersion>
-    <mavenPluginPluginVersion>3.4</mavenPluginPluginVersion>
   </properties>
 
   <dependencyManagement>
@@ -99,7 +98,6 @@
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
       <artifactId>wstx-asl</artifactId>
@@ -110,22 +108,19 @@
       <artifactId>stax-api</artifactId>
       <version>1.0.1</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${mavenVersion}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-project</artifactId>
       <version>${mavenVersion}</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>${mavenPluginPluginVersion}</version>
+      <version>3.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -137,29 +132,13 @@
   </dependencies>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <!-- TODO Move this to mojo-parent ? -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.4</version>
-          <configuration>
-            <topSiteURL>${project.distributionManagement.site.url}</topSiteURL>
-            <skipDeploy>true</skipDeploy><!-- don't deploy site with maven-site-plugin -->
-          </configuration>
-        </plugin>
-        <!-- TODO Move this to mojo-parent ? -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-publish-plugin</artifactId>
-          <version>1.1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <topSiteURL>${project.distributionManagement.site.url}</topSiteURL>
+          <skipDeploy>true</skipDeploy><!-- don't deploy site with maven-site-plugin -->
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.doxia</groupId>
@@ -171,7 +150,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>${mavenPluginPluginVersion}</version>
         <configuration>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
@@ -219,7 +197,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>${mavenPluginPluginVersion}</version>
         <configuration>
           <requirements>
             <memory>256m</memory>
