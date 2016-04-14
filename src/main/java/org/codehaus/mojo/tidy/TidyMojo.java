@@ -19,18 +19,19 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.mojo.tidy.task.PomTidy;
+import static org.codehaus.plexus.util.FileUtils.fileRead;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 
-import static org.codehaus.plexus.util.FileUtils.fileRead;
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.mojo.tidy.task.PomTidy;
 
 /**
  * An abstract base class for Mojos of the Tidy plugin. Handles common
@@ -44,7 +45,7 @@ public abstract class TidyMojo
     /**
      * The Maven Project.
      */
-    @Component
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
     /**
