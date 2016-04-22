@@ -22,7 +22,7 @@ that it is tidy.
 The Tidy Plugin has two goals.
 
 * [tidy:pom](./pom-mojo.html) tidies up the project's `pom.xml`.
-* [tidy:check](./check-mojo.html}tidy:check) checks that the project's `pom.xml` is tidy.
+* [tidy:check](./check-mojo.html) checks that the project's `pom.xml` is tidy.
 
 ### Usage
 
@@ -39,3 +39,4 @@ The `pom.xml` file will
 [POM Code Convention](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
 of the Maven team.
 * have the nodes `groupId`, `artifactId` and `version` always in this order.
+
