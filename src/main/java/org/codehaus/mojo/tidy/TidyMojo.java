@@ -49,6 +49,12 @@ public abstract class TidyMojo
     protected MavenProject project;
 
     /**
+     * Set this to 'true' to skip execution.
+     */
+    @Parameter( property = "tidy.skip", defaultValue = "false" )
+    protected boolean skip;
+
+    /**
      * Perform whatever build-process behavior this <code>Mojo</code> implements using the specified POM.
      *
      * @param pom the project's POM.
@@ -63,6 +69,11 @@ public abstract class TidyMojo
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
+        if ( skip )
+        {
+            getLog().info( "Tidy is skipped." );
+            return;
+        }
         String pom = getProjectPom();
         executeForPom( pom );
     }
