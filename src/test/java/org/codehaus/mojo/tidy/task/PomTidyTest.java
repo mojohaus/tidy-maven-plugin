@@ -39,8 +39,8 @@ public class PomTidyTest
     public static Iterable<String> tests()
     {
         return asList( "add-xml-declaration", "complete-pom", "do-not-mix-tab-and-spaces", "groupid-artifactid-version",
-                       "pom-space-indent", "pom-tab-indent", "pom-with-comments", "pom-with-crlf",
-                       "pom-with-line-without-indent", "pom-with-profiles", "pom-with-reporting",
+                       "plugin-config-with-extension-string", "pom-space-indent", "pom-tab-indent", "pom-with-comments",
+                       "pom-with-crlf", "pom-with-line-without-indent", "pom-with-profiles", "pom-with-reporting",
                        "project-single-line" );
     }
 
