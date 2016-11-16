@@ -7,6 +7,8 @@
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
+  <description>Test of tidy:pom on a pom with mixed tab and spaces indentation.</description>
+
   <properties>
     <foo>bar</foo>
   </properties>

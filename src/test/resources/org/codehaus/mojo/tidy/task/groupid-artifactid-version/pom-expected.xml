@@ -13,7 +13,7 @@
   <artifactId>pom-space-indent</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <description>Test of tidy:pom on a pom with XML comments.</description>
+  <description>Test of tidy:pom sorting all GAV elements in a pom.</description>
 
   <distributionManagement>
     <relocation>
