@@ -64,7 +64,7 @@ class EnsureOrderAndIndent
                                                                                                      "exclusions",
                                                                                                      "optional" ) ),
         new SectionSorter( "exclusion", new NodeGroup( "groupId", "artifactId" ) ),
-        new SectionSorter( "extension", new NodeGroup( "groupId", "artifactId", "version" ) ),
+        new SectionSorter( "build/extensions/extension", new NodeGroup( "groupId", "artifactId", "version" ) ),
         new SectionSorter( "parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
         new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ),
         new SectionSorter( "relocation", new NodeGroup( "groupId", "artifactId", "version" ) ) );
@@ -123,13 +123,12 @@ class EnsureOrderAndIndent
                         int pos = getPosOfNextEvent( reader );
                         tidyPom.append( pom.substring( posFirstUnformatted, pos ) );
                         tidyPom.append( formatSection( reader, pom, format ) );
-                        path = substringAfterLast( path, "/" );
                         posFirstUnformatted = getPosOfNextEvent( reader );
                     }
                 }
                 else if ( event.isEndElement() )
                 {
-                    path = substringAfterLast( path, "/" );
+                    path = substringBeforeLast( path, "/" );
                 }
             }
             tidyPom.append( pom.substring( posFirstUnformatted ) );
@@ -383,6 +382,12 @@ class EnsureOrderAndIndent
             throws XMLStreamException
         {
             return reader.peek().getLocation().getCharacterOffset();
+        }
+
+        private String substringBeforeLast( String str, String separator )
+        {
+            int endIndex = str.lastIndexOf( separator );
+            return str.substring( 0, endIndex );
         }
 
         private String substringAfterLast( String str, String separator )
