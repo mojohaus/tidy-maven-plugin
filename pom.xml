@@ -30,7 +30,7 @@
   </parent>
 
   <artifactId>tidy-maven-plugin</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Tidy Maven Plugin</name>
