@@ -56,11 +56,11 @@ class EnsureOrderAndIndent
                                                             "extensions" ) ),
         new SectionSorter( "dependency", new NodeGroup( "groupId", "artifactId", "version", "type", "classifier",
                                                         "scope", "systemPath", "exclusions", "optional" ) ),
-        new SectionSorter( "exclusion", new NodeGroup( "groupId", "artifactId" ) ),
+        new SectionSorter( "dependency/exclusions/exclusion", new NodeGroup( "groupId", "artifactId" ) ),
         new SectionSorter( "build/extensions/extension", new NodeGroup( "groupId", "artifactId", "version" ) ),
-        new SectionSorter( "parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
+        new SectionSorter( "/project/parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
         new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ),
-        new SectionSorter( "relocation", new NodeGroup( "groupId", "artifactId", "version" ) ) );
+        new SectionSorter( "/project/distributionManagement/relocation", new NodeGroup( "groupId", "artifactId", "version" ) ) );
 
     @Override
     public String tidyPom( String pom, Format format )
