@@ -23,10 +23,10 @@ under the License.
     <link>http://www.mojohaus.org/tidy-maven-plugin/</link>
     <description>Tidy Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011 - 2016 MojoHaus</copyright>
+    <copyright>&#169;2011 - 2017 MojoHaus</copyright>
     <item>
       <title>File: 13,
-             Errors: 4,
+             Errors: 5,
              Warnings: 8,
              Infos: 0
       </title>
@@ -69,7 +69,7 @@ under the License.
                   2
                 </td>
                 <td>
-                  1
+                  2
                 </td>
               </tr>
                           <tr>
