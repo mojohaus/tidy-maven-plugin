@@ -24,7 +24,6 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Math.max;
@@ -79,7 +78,7 @@ class EnsureOrderAndIndent
 
         final NodeGroup[] groups;
 
-        final String[] sequence;
+        final List<String> sequence;
 
         SectionSorter( String scope, NodeGroup... groups )
         {
@@ -88,14 +87,14 @@ class EnsureOrderAndIndent
             this.sequence = calculateSequence( groups );
         }
 
-        String[] calculateSequence( NodeGroup[] groups )
+        List<String> calculateSequence( NodeGroup[] groups )
         {
             List<String> sequence = new ArrayList<String>();
             for ( NodeGroup group : groups )
             {
                 sequence.addAll( group.nodes );
             }
-            return sequence.toArray( new String[sequence.size()] );
+            return sequence;
         }
 
         String sortSections( String pom, Format format )
@@ -144,8 +143,8 @@ class EnsureOrderAndIndent
             throws XMLStreamException
         {
             int startOfSection = getPosOfNextEvent( reader );
-            int[] starts = new int[sequence.length];
-            int[] ends = new int[sequence.length];
+            int[] starts = new int[sequence.size()];
+            int[] ends = new int[sequence.size()];
             XMLEvent endScope = calculateStartsAndEnds( reader, starts, ends );
             return formatSection( reader, pom, format, startOfSection, starts, ends, endScope );
         }
@@ -196,29 +195,22 @@ class EnsureOrderAndIndent
         private boolean hasToBeSorted( QName nodeName )
         {
             String name = nodeName.getLocalPart();
-            for ( String elementName : sequence )
-            {
-                if ( name.equals( elementName ) )
-                {
-                    return true;
-                }
-            }
-            return false;
+            return sequence.contains( name );
         }
 
         private int getSequenceIndex( QName nodeName )
         {
             String name = nodeName.getLocalPart();
-            for ( int i = 0; i < sequence.length; i++ )
+            if ( sequence.contains( name ) )
             {
-                if ( name.equals( sequence[i] ) )
-                {
-                    return i;
-                }
+                return sequence.indexOf( name );
             }
-            throw new IllegalArgumentException(
-                "The path '" + nodeName + " does not specify an element of the sequence " + Arrays.toString( sequence )
-                    + "." );
+            else
+            {
+                throw new IllegalArgumentException(
+                    "The path '" + nodeName + " does not specify an element of the sequence " + sequence
+                        + "." );
+            }
         }
 
         private String formatSection( XMLEventReader reader, String pom, Format format, int startOfSection,
