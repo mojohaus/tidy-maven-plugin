@@ -66,6 +66,7 @@ public abstract class TidyMojo
     protected abstract void executeForPom( String pom )
         throws MojoExecutionException, MojoFailureException;
 
+    @Override
     public void execute()
         throws MojoExecutionException, MojoFailureException
     {
