@@ -29,6 +29,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>3.8.2</junit.version>
+    <junit.plugin.version>4.3.2</junit.plugin.version>
   </properties>
   <pluginRepositories>
     <pluginRepository>
