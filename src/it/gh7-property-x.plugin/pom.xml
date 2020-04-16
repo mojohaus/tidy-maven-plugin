@@ -15,7 +15,7 @@
   <description>Test that check doesn't fail for a tidy POM</description>
 
   <properties>
-    <some.plugin.property>true</some.plugin.property>
+    <some.property.plugin>true</some.property.plugin>
   </properties>
 
   <build>

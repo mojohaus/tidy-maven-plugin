@@ -15,7 +15,7 @@
   <description>Test that check doesn't fail for a tidy POM</description>
 
   <properties>
-    <some.dependency.property>true</some.dependency.property>
+    <some.property.dependency>true</some.property.dependency>
   </properties>
 
   <build>
