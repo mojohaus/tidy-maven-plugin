@@ -17,14 +17,14 @@
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
 
   <name>Complete POM test</name>
   <inceptionYear>2011</inceptionYear>
-  <url>http://maven.apache.org</url>
+  <url>https://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,7 +34,7 @@
     <pluginRepository>
       <id>ossrh-snapshots</id>
       <name>ossrh-snapshots</name>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -45,14 +45,14 @@
   </pluginRepositories>
   <organization>
     <name>MojoHaus</name>
-    <url>http://www.mojohaus.org</url>
+    <url>https://www.mojohaus.org</url>
   </organization>
 
   <repositories>
     <repository>
       <id>ossrh-snapshots</id>
       <name>ossrh-snapshots</name>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -76,9 +76,9 @@
       <subscribe>users-subscribe@maven.apache.org</subscribe>
       <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
       <post>users@maven.apache.org</post>
-      <archive>http://mail-archives.apache.org/mod_mbox/maven-users/</archive>
+      <archive>https://mail-archives.apache.org/mod_mbox/maven-users/</archive>
       <otherArchives>
-        <otherArchive>http://maven.40175.n5.nabble.com/Maven-Users-f40176.html</otherArchive>
+        <otherArchive>https://maven.40175.n5.nabble.com/Maven-Users-f40176.html</otherArchive>
       </otherArchives>
     </mailingList>
   </mailingLists>
@@ -116,11 +116,11 @@
   <distributionManagement>
     <repository>
       <id>ossrh-staging</id>
-      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
     </repository>
     <snapshotRepository>
       <id>ossrh-snapshots</id>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <site>
       <id>github</id>
