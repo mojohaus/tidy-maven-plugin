@@ -83,6 +83,7 @@
   <properties>
     <mojo.java.target>1.6</mojo.java.target>
     <mavenVersion>2.2.1</mavenVersion>
+    <junit.version>5.7.2</junit.version>
   </properties>
 
   <dependencyManagement>
@@ -133,9 +134,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
