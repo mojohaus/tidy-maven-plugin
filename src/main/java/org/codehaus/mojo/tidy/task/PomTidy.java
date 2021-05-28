@@ -32,7 +32,8 @@ public class PomTidy
     private static final FormatIdentifier FORMAT_IDENTIFIER = new FormatIdentifier();
 
     private static final List<TidyTask> TIDY_TASKS =
-        asList( new EnsureXmlHeader(), new EnsureOrderAndIndent(), new EnsureSingleLineProjectStartTag(),
+        asList( new EnsureXmlHeader(),
+                new EnsureCommentsOnSingleLine(), new EnsureOrderAndIndent(), new EnsureSingleLineProjectStartTag(),
                 new EnsureTrailingNewLine() );
 
     public String tidy( String pom )

@@ -41,7 +41,7 @@ public class PomTidyTest
         return asList( "add-xml-declaration", "complete-pom", "do-not-mix-tab-and-spaces", "groupid-artifactid-version",
                        "plugin-config-with-maven-element-names", "pom-space-indent", "pom-tab-indent",
                        "pom-with-comments", "pom-with-crlf", "pom-with-line-without-indent", "pom-with-profiles",
-                       "pom-with-reporting", "project-single-line" );
+                       "pom-with-reporting", "project-single-line", "TIDY-3_comment" );
     }
 
     @Parameter( 0 )
