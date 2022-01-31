@@ -135,7 +135,7 @@ class EnsureOrderAndIndent
             }
             else
             {
-                return path.endsWith( scope );
+                return path.endsWith( "/" + scope );
             }
         }
 
