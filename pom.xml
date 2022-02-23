@@ -84,6 +84,7 @@
     <mojo.java.target>1.8</mojo.java.target>
     <mavenVersion>2.2.1</mavenVersion>
     <junit.version>5.7.2</junit.version>
+    <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
