@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>65</version>
+    <version>70</version>
     <relativePath />
   </parent>
 
@@ -81,7 +81,6 @@
   </distributionManagement>
 
   <properties>
-    <mojo.java.target>1.8</mojo.java.target>
     <mavenVersion>2.2.1</mavenVersion>
     <junit.version>5.7.2</junit.version>
     <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
@@ -154,13 +153,12 @@
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <topSiteURL>${project.distributionManagement.site.url}</topSiteURL>
-          <skipDeploy>true</skipDeploy><!-- don't deploy site with maven-site-plugin -->
         </configuration>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.doxia</groupId>
             <artifactId>doxia-module-markdown</artifactId>
-            <version>1.7</version>
+            <version>1.11.1</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -177,34 +175,16 @@
               <goal>descriptor</goal>
             </goals>
           </execution>
-          <execution>
-            <id>help-goal</id>
-            <goals>
-              <goal>helpmojo</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
       <!-- to publish site on branch gh-pages -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-publish-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>scm-publish</id>
-            <phase>site-deploy</phase>
-            <!-- deploy site with maven-scm-publish-plugin -->
-            <goals>
-              <goal>publish-scm</goal>
-            </goals>
-            <configuration>
-              <!-- mono-module doesn't require site:stage -->
-              <content>${project.build.directory}/site</content>
-              <!-- branch where to deploy -->
-              <scmBranch>gh-pages</scmBranch>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <!-- mono-module doesn't require site:stage -->
+          <content>${project.build.directory}/site</content>
+        </configuration>
       </plugin>
     </plugins>
   </build>
