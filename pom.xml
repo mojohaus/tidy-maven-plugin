@@ -81,7 +81,7 @@
   </distributionManagement>
 
   <properties>
-    <mavenVersion>2.2.1</mavenVersion>
+    <mavenVersion>3.2.5</mavenVersion>
     <junit.version>5.7.2</junit.version>
     <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
@@ -125,7 +125,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
+      <artifactId>maven-compat</artifactId>
       <version>${mavenVersion}</version>
       <scope>provided</scope>
     </dependency>
