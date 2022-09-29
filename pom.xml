@@ -71,7 +71,7 @@
   </scm>
 
   <properties>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>3.8.6</mavenVersion>
     <junit.version>5.7.2</junit.version>
     <project.build.outputTimestamp>2022-01-18T09:14:02Z</project.build.outputTimestamp>
   </properties>
