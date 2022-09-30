@@ -29,28 +29,32 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Parameterized.class)
-public class PomTidyFixesTest {
+@RunWith( Parameterized.class )
+public class PomTidyFixesTest
+{
 
-	protected static final String PATH = "fixes/order-and-indent-start-element-of-scope/";
+    protected static final String PATH = "fixes/order-and-indent-start-element-of-scope/";
 
-	@Parameters(name = "{0}")
-	public static Iterable<String> tests() {
-		return asList(
-				"property-ending-with-plugin.pom.xml",
-				"property-ending-with-dependency.pom.xml"
-		);
-	}
+    @Parameters( name = "{0}" )
+    public static Iterable<String> tests()
+    {
+        return asList(
+            "property-ending-with-plugin.pom.xml",
+            "property-ending-with-dependency.pom.xml"
+        );
+    }
 
-	@Parameter(0)
-	public String name;
+    @SuppressWarnings( "checkstyle:VisibilityModifier" )
+    @Parameter( 0 )
+    public String name;
 
-	@Test
-	public void shouldThrowNoError()
-			throws Exception {
-		final String pom = IOUtil.toString(getClass().getResourceAsStream(PATH + name));
-		String tidyPom = new PomTidy().tidy(pom);
-		assertEquals(pom, tidyPom, "nothing to tidy here");
-	}
+    @Test
+    public void shouldThrowNoError()
+        throws Exception
+    {
+        final String pom = IOUtil.toString( getClass().getResourceAsStream( PATH + name ) );
+        String tidyPom = new PomTidy().tidy( pom );
+        assertEquals( pom, tidyPom, "nothing to tidy here" );
+    }
 
 }
