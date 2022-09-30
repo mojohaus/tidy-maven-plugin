@@ -44,6 +44,7 @@ public class PomTidyTest
                        "pom-with-reporting", "project-single-line" );
     }
 
+    @SuppressWarnings( "checkstyle:VisibilityModifier" )
     @Parameter( 0 )
     public String name;
 

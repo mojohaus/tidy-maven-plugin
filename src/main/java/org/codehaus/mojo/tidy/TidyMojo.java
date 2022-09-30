@@ -45,7 +45,7 @@ public abstract class TidyMojo
     /**
      * The Maven Project.
      */
-    @Parameter(defaultValue = "${project}", required = true, readonly = true)
+    @Parameter( defaultValue = "${project}", required = true, readonly = true )
     protected MavenProject project;
 
     /**

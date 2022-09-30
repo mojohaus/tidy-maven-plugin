@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +60,8 @@ class EnsureOrderAndIndent
         new SectionSorter( "build/extensions/extension", new NodeGroup( "groupId", "artifactId", "version" ) ),
         new SectionSorter( "/project/parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
         new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ),
-        new SectionSorter( "/project/distributionManagement/relocation", new NodeGroup( "groupId", "artifactId", "version" ) ) );
+        new SectionSorter( "/project/distributionManagement/relocation",
+                           new NodeGroup( "groupId", "artifactId", "version" ) ) );
 
     @Override
     public String tidyPom( String pom, Format format )
@@ -237,7 +239,8 @@ class EnsureOrderAndIndent
                         }
                         addTextIfNotEmpty( output, indent, getPrecedingText( pom, starts[i], ends ), format );
                         addTextIfNotEmpty( output, indent, pom.substring( starts[i], ends[i] ), format );
-                        firstGroupStarted = groupStarted = true;
+                        firstGroupStarted = true;
+                        groupStarted = true;
                     }
                     ++i;
                 }
