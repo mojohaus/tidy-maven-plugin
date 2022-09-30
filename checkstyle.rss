@@ -20,19 +20,19 @@ under the License.
 <rss version="0.91">
   <channel>
     <title>Tidy Maven Plugin - Checkstyle report</title>
-    <link>http://www.mojohaus.org/tidy-maven-plugin/</link>
+    <link>https://www.mojohaus.org/tidy-maven-plugin/</link>
     <description>Tidy Maven Plugin - Checkstyle report</description>
     <language>en-us</language>
-    <copyright>&#169;2011 - 2017 MojoHaus</copyright>
+    <copyright>&#169;2011 - 2022 MojoHaus</copyright>
     <item>
-      <title>File: 13,
-             Errors: 5,
-             Warnings: 8,
-             Infos: 0
+      <title>File: 4,
+             Errors: 0,
+             Warnings: 5,
+             Infos: 3
       </title>
-            <link>http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html</link>
+            <link>https://www.mojohaus.org/tidy-maven-plugin//checkstyle.html</link>
       <description>
-        <p>Click <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html">here</a> for the full Checkstyle report.</p>
+        <p>Click <a href="https://www.mojohaus.org/tidy-maven-plugin//checkstyle.html">here</a> for the full Checkstyle report.</p>
 
         <table summary="Files" boder="1">
           <thead>
@@ -46,21 +46,7 @@ under the License.
           <tbody>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.EnsureTrailingNewLine.java">org/codehaus/mojo/tidy/task/EnsureTrailingNewLine.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.EnsureOrderAndIndent.java">org/codehaus/mojo/tidy/task/EnsureOrderAndIndent.java</a>
+                  <a href="https://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.EnsureOrderAndIndent.java">org/codehaus/mojo/tidy/task/EnsureOrderAndIndent.java</a>
                 </td>
                 <td>
                   0
@@ -69,57 +55,12 @@ under the License.
                   2
                 </td>
                 <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.TidyMojo.java">org/codehaus/mojo/tidy/TidyMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  5
-                </td>
-                <td>
-                  2
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.CheckMojo.java">org/codehaus/mojo/tidy/CheckMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
                   0
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.HelpMojo.java">org/codehaus/mojo/tidy/HelpMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  1
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.PomTidy.java">org/codehaus/mojo/tidy/task/PomTidy.java</a>
-                </td>
-                <td>
-                  0
+                  <a href="https://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.PomTidyTest.java">org/codehaus/mojo/tidy/task/PomTidyTest.java</a>
                 </td>
                 <td>
                   1
@@ -127,30 +68,19 @@ under the License.
                 <td>
                   0
                 </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.PomMojo.java">org/codehaus/mojo/tidy/PomMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
                 <td>
                   0
                 </td>
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.EnsureSingleLineProjectStartTag.java">org/codehaus/mojo/tidy/task/EnsureSingleLineProjectStartTag.java</a>
+                  <a href="https://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.TidyMojo.java">org/codehaus/mojo/tidy/TidyMojo.java</a>
                 </td>
                 <td>
                   0
                 </td>
                 <td>
-                  0
+                  3
                 </td>
                 <td>
                   0
@@ -158,66 +88,10 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.XMLEventReaderFactory.java">org/codehaus/mojo/tidy/task/XMLEventReaderFactory.java</a>
+                  <a href="https://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.PomTidyFixesTest.java">org/codehaus/mojo/tidy/task/PomTidyFixesTest.java</a>
                 </td>
                 <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.EnsureXmlHeader.java">org/codehaus/mojo/tidy/task/EnsureXmlHeader.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.FormatIdentifier.java">org/codehaus/mojo/tidy/task/FormatIdentifier.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.Format.java">org/codehaus/mojo/tidy/task/Format.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="http://www.mojohaus.org/tidy-maven-plugin//checkstyle.html#org.codehaus.mojo.tidy.task.TidyTask.java">org/codehaus/mojo/tidy/task/TidyTask.java</a>
-                </td>
-                <td>
-                  0
+                  2
                 </td>
                 <td>
                   0
