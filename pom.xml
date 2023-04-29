@@ -79,7 +79,7 @@
   </scm>
 
   <properties>
-    <mavenVersion>3.2.5</mavenVersion>
+    <mavenVersion>3.5.4</mavenVersion>
     <junit.version>5.9.1</junit.version>
     <project.build.outputTimestamp>2022-09-30T06:33:55Z</project.build.outputTimestamp>
   </properties>

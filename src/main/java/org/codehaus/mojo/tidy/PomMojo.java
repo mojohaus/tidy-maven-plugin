@@ -30,7 +30,7 @@ import static org.codehaus.plexus.util.FileUtils.fileWrite;
 /**
  * Tidy up the <code>pom.xml</code> into the canonical order.
  */
-@Mojo( name = "pom", requiresProject = true, requiresDirectInvocation = true )
+@Mojo( name = "pom" )
 public class PomMojo
     extends TidyMojo
 {
