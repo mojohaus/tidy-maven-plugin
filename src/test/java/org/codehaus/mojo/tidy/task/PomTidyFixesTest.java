@@ -19,33 +19,22 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
-import org.codehaus.plexus.util.IOUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import java.util.Objects;
 
-import static java.util.Arrays.asList;
+import org.codehaus.plexus.util.IOUtil;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
 public class PomTidyFixesTest {
 
     protected static final String PATH = "fixes/order-and-indent-start-element-of-scope/";
 
-    @Parameters(name = "{0}")
-    public static Iterable<String> tests() {
-        return asList("property-ending-with-plugin.pom.xml", "property-ending-with-dependency.pom.xml");
-    }
-
-    @SuppressWarnings("checkstyle:VisibilityModifier")
-    @Parameter(0)
-    public String name;
-
-    @Test
-    public void shouldThrowNoError() throws Exception {
-        final String pom = IOUtil.toString(getClass().getResourceAsStream(PATH + name));
+    @ValueSource(strings = {"property-ending-with-plugin.pom.xml", "property-ending-with-dependency.pom.xml"})
+    @ParameterizedTest(name = "{0}")
+    void shouldThrowNoError(String name) throws Exception {
+        String pom = IOUtil.toString(Objects.requireNonNull(getClass().getResourceAsStream(PATH + name)));
         String tidyPom = new PomTidy().tidy(pom);
         assertEquals(pom, tidyPom, "nothing to tidy here");
     }
