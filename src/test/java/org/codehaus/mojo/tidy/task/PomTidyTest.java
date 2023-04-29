@@ -19,24 +19,22 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
+import javax.xml.stream.XMLStreamException;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.codehaus.plexus.util.IOUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
 public class PomTidyTest {
-    @Parameters(name = "{0}")
-    public static Iterable<String> tests() {
-        return asList(
+
+    @ParameterizedTest(name = "{0}")
+    @ValueSource(
+            strings = {
                 "add-xml-declaration",
                 "complete-pom",
                 "do-not-mix-tab-and-spaces",
@@ -49,22 +47,16 @@ public class PomTidyTest {
                 "pom-with-line-without-indent",
                 "pom-with-profiles",
                 "pom-with-reporting",
-                "project-single-line");
-    }
-
-    @SuppressWarnings("checkstyle:VisibilityModifier")
-    @Parameter(0)
-    public String name;
-
-    @Test
-    public void generatesTidyPom() throws Exception {
-        String pom = readPom("pom.xml");
+                "project-single-line"
+            })
+    void generatesTidyPom(String name) throws IOException, XMLStreamException {
+        String pom = readPom(name, "pom.xml");
         String tidyPom = new PomTidy().tidy(pom);
-        assertEquals(readPom("pom-expected.xml"), tidyPom);
+        assertEquals(readPom(name, "pom-expected.xml"), tidyPom);
     }
 
-    private String readPom(String filename) throws IOException {
-        InputStream is = getClass().getResourceAsStream(name + "/" + filename);
+    private String readPom(String test, String filename) throws IOException {
+        InputStream is = getClass().getResourceAsStream(test + "/" + filename);
         return IOUtil.toString(is);
     }
 }
