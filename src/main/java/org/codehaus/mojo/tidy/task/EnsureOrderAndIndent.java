@@ -36,362 +36,320 @@ import static org.codehaus.plexus.util.StringUtils.countMatches;
 import static org.codehaus.plexus.util.StringUtils.isWhitespace;
 import static org.codehaus.plexus.util.StringUtils.repeat;
 
-class EnsureOrderAndIndent
-    implements TidyTask
-{
+class EnsureOrderAndIndent implements TidyTask {
     private static final List<SectionSorter> SECTION_SORTERS = asList(
-        new SectionSorter( "/project", new NodeGroup( "modelVersion" ), new NodeGroup( "parent" ),
-                           new NodeGroup( "groupId", "artifactId", "version", "packaging" ),
-                           new NodeGroup( "name", "description", "url", "inceptionYear", "organization", "licenses" ),
-                           new NodeGroup( "developers", "contributors" ), new NodeGroup( "mailingLists" ),
-                           new NodeGroup( "prerequisites" ), new NodeGroup( "modules" ),
-                           new NodeGroup( "scm", "issueManagement", "ciManagement", "distributionManagement" ),
-                           new NodeGroup( "properties" ), new NodeGroup( "dependencyManagement", "dependencies" ),
-                           new NodeGroup( "repositories", "pluginRepositories" ), new NodeGroup( "build" ),
-                           new NodeGroup( "reporting" ), new NodeGroup( "profiles" ) ),
-        new SectionSorter( "/project/build", new NodeGroup( "defaultGoal", "sourceDirectory", "scriptSourceDirectory",
-                                                            "testSourceDirectory", "directory", "outputDirectory",
-                                                            "testOutputDirectory", "finalName", "filters", "resources",
-                                                            "testResources", "pluginManagement", "plugins",
-                                                            "extensions" ) ),
-        new SectionSorter( "dependency", new NodeGroup( "groupId", "artifactId", "version", "type", "classifier",
-                                                        "scope", "systemPath", "exclusions", "optional" ) ),
-        new SectionSorter( "dependency/exclusions/exclusion", new NodeGroup( "groupId", "artifactId" ) ),
-        new SectionSorter( "build/extensions/extension", new NodeGroup( "groupId", "artifactId", "version" ) ),
-        new SectionSorter( "/project/parent", new NodeGroup( "groupId", "artifactId", "version", "relativePath" ) ),
-        new SectionSorter( "plugin", new NodeGroup( "groupId", "artifactId", "version" ) ),
-        new SectionSorter( "/project/distributionManagement/relocation",
-                           new NodeGroup( "groupId", "artifactId", "version" ) ) );
+            new SectionSorter(
+                    "/project",
+                    new NodeGroup("modelVersion"),
+                    new NodeGroup("parent"),
+                    new NodeGroup("groupId", "artifactId", "version", "packaging"),
+                    new NodeGroup("name", "description", "url", "inceptionYear", "organization", "licenses"),
+                    new NodeGroup("developers", "contributors"),
+                    new NodeGroup("mailingLists"),
+                    new NodeGroup("prerequisites"),
+                    new NodeGroup("modules"),
+                    new NodeGroup("scm", "issueManagement", "ciManagement", "distributionManagement"),
+                    new NodeGroup("properties"),
+                    new NodeGroup("dependencyManagement", "dependencies"),
+                    new NodeGroup("repositories", "pluginRepositories"),
+                    new NodeGroup("build"),
+                    new NodeGroup("reporting"),
+                    new NodeGroup("profiles")),
+            new SectionSorter(
+                    "/project/build",
+                    new NodeGroup(
+                            "defaultGoal",
+                            "sourceDirectory",
+                            "scriptSourceDirectory",
+                            "testSourceDirectory",
+                            "directory",
+                            "outputDirectory",
+                            "testOutputDirectory",
+                            "finalName",
+                            "filters",
+                            "resources",
+                            "testResources",
+                            "pluginManagement",
+                            "plugins",
+                            "extensions")),
+            new SectionSorter(
+                    "dependency",
+                    new NodeGroup(
+                            "groupId",
+                            "artifactId",
+                            "version",
+                            "type",
+                            "classifier",
+                            "scope",
+                            "systemPath",
+                            "exclusions",
+                            "optional")),
+            new SectionSorter("dependency/exclusions/exclusion", new NodeGroup("groupId", "artifactId")),
+            new SectionSorter("build/extensions/extension", new NodeGroup("groupId", "artifactId", "version")),
+            new SectionSorter("/project/parent", new NodeGroup("groupId", "artifactId", "version", "relativePath")),
+            new SectionSorter("plugin", new NodeGroup("groupId", "artifactId", "version")),
+            new SectionSorter(
+                    "/project/distributionManagement/relocation", new NodeGroup("groupId", "artifactId", "version")));
 
     @Override
-    public String tidyPom( String pom, Format format )
-        throws XMLStreamException
-    {
-        for ( SectionSorter sorter : SECTION_SORTERS )
-        {
-            pom = sorter.sortSections( pom, format );
+    public String tidyPom(String pom, Format format) throws XMLStreamException {
+        for (SectionSorter sorter : SECTION_SORTERS) {
+            pom = sorter.sortSections(pom, format);
         }
         return pom;
     }
 
-    private static class SectionSorter
-    {
+    private static class SectionSorter {
         final String scope;
 
         final NodeGroup[] groups;
 
         final List<String> sequence;
 
-        SectionSorter( String scope, NodeGroup... groups )
-        {
+        SectionSorter(String scope, NodeGroup... groups) {
             this.scope = scope;
             this.groups = groups;
-            this.sequence = calculateSequence( groups );
+            this.sequence = calculateSequence(groups);
         }
 
-        List<String> calculateSequence( NodeGroup[] groups )
-        {
+        List<String> calculateSequence(NodeGroup[] groups) {
             List<String> sequence = new ArrayList<String>();
-            for ( NodeGroup group : groups )
-            {
-                sequence.addAll( group.nodes );
+            for (NodeGroup group : groups) {
+                sequence.addAll(group.nodes);
             }
             return sequence;
         }
 
-        String sortSections( String pom, Format format )
-            throws XMLStreamException
-        {
-            XMLEventReader reader = createEventReaderForPom( pom );
+        String sortSections(String pom, Format format) throws XMLStreamException {
+            XMLEventReader reader = createEventReaderForPom(pom);
             String path = "";
             int posFirstUnformatted = 0;
             StringBuilder tidyPom = new StringBuilder();
-            while ( reader.hasNext() )
-            {
+            while (reader.hasNext()) {
                 XMLEvent event = reader.nextEvent();
-                if ( event.isStartElement() )
-                {
+                if (event.isStartElement()) {
                     path += "/" + event.asStartElement().getName().getLocalPart();
-                    if ( isStartElementOfScope( path ) )
-                    {
-                        int pos = getPosOfNextEvent( reader );
-                        tidyPom.append( pom.substring( posFirstUnformatted, pos ) );
-                        tidyPom.append( formatSection( reader, pom, format ) );
-                        posFirstUnformatted = getPosOfNextEvent( reader );
+                    if (isStartElementOfScope(path)) {
+                        int pos = getPosOfNextEvent(reader);
+                        tidyPom.append(pom.substring(posFirstUnformatted, pos));
+                        tidyPom.append(formatSection(reader, pom, format));
+                        posFirstUnformatted = getPosOfNextEvent(reader);
                     }
-                }
-                else if ( event.isEndElement() )
-                {
-                    path = substringBeforeLast( path, "/" );
+                } else if (event.isEndElement()) {
+                    path = substringBeforeLast(path, "/");
                 }
             }
-            tidyPom.append( pom.substring( posFirstUnformatted ) );
+            tidyPom.append(pom.substring(posFirstUnformatted));
             return tidyPom.toString();
         }
 
-        private boolean isStartElementOfScope( String path )
-        {
-            if ( scope.startsWith( "/" ) )
-            {
-                return path.equals( scope );
-            }
-            else
-            {
-                return path.endsWith( "/" + scope );
+        private boolean isStartElementOfScope(String path) {
+            if (scope.startsWith("/")) {
+                return path.equals(scope);
+            } else {
+                return path.endsWith("/" + scope);
             }
         }
 
-        private String formatSection( XMLEventReader reader, String pom, Format format )
-            throws XMLStreamException
-        {
-            int startOfSection = getPosOfNextEvent( reader );
+        private String formatSection(XMLEventReader reader, String pom, Format format) throws XMLStreamException {
+            int startOfSection = getPosOfNextEvent(reader);
             int[] starts = new int[sequence.size()];
             int[] ends = new int[sequence.size()];
-            XMLEvent endScope = calculateStartsAndEnds( reader, starts, ends );
-            return formatSection( reader, pom, format, startOfSection, starts, ends, endScope );
+            XMLEvent endScope = calculateStartsAndEnds(reader, starts, ends);
+            return formatSection(reader, pom, format, startOfSection, starts, ends, endScope);
         }
 
-        private XMLEvent calculateStartsAndEnds( XMLEventReader reader, int[] starts, int[] ends )
-            throws XMLStreamException
-        {
-            fill( starts, Integer.MAX_VALUE );
-            fill( ends, -1 );
+        private XMLEvent calculateStartsAndEnds(XMLEventReader reader, int[] starts, int[] ends)
+                throws XMLStreamException {
+            fill(starts, Integer.MAX_VALUE);
+            fill(ends, -1);
             int level = 0;
-            while ( reader.hasNext() )
-            {
+            while (reader.hasNext()) {
                 XMLEvent event = reader.nextEvent();
-                if ( event.isStartElement() )
-                {
+                if (event.isStartElement()) {
                     ++level;
-                    if ( level == 1 )
-                    {
+                    if (level == 1) {
                         QName name = event.asStartElement().getName();
-                        if ( hasToBeSorted( name ) )
-                        {
-                            int i = getSequenceIndex( name );
+                        if (hasToBeSorted(name)) {
+                            int i = getSequenceIndex(name);
                             starts[i] = event.getLocation().getCharacterOffset();
                         }
                     }
-                }
-                else if ( event.isEndElement() )
-                {
-                    if ( level == 0 )
-                    {
+                } else if (event.isEndElement()) {
+                    if (level == 0) {
                         return event;
-                    }
-                    else if ( level == 1 )
-                    {
+                    } else if (level == 1) {
                         QName name = event.asEndElement().getName();
-                        if ( hasToBeSorted( name ) )
-                        {
-                            int i = getSequenceIndex( name );
-                            ends[i] = getPosOfNextEvent( reader );
+                        if (hasToBeSorted(name)) {
+                            int i = getSequenceIndex(name);
+                            ends[i] = getPosOfNextEvent(reader);
                         }
                     }
                     --level;
                 }
             }
-            throw new RuntimeException( "End element missing." );
+            throw new RuntimeException("End element missing.");
         }
 
-        private boolean hasToBeSorted( QName nodeName )
-        {
+        private boolean hasToBeSorted(QName nodeName) {
             String name = nodeName.getLocalPart();
-            return sequence.contains( name );
+            return sequence.contains(name);
         }
 
-        private int getSequenceIndex( QName nodeName )
-        {
+        private int getSequenceIndex(QName nodeName) {
             String name = nodeName.getLocalPart();
-            if ( sequence.contains( name ) )
-            {
-                return sequence.indexOf( name );
-            }
-            else
-            {
+            if (sequence.contains(name)) {
+                return sequence.indexOf(name);
+            } else {
                 throw new IllegalArgumentException(
-                    "The path '" + nodeName + " does not specify an element of the sequence " + sequence
-                        + "." );
+                        "The path '" + nodeName + " does not specify an element of the sequence " + sequence + ".");
             }
         }
 
-        private String formatSection( XMLEventReader reader, String pom, Format format, int startOfSection,
-                                      int[] starts, int[] ends, XMLEvent endScope )
-            throws XMLStreamException
-        {
-            String outdent = calculateOutdent( pom, endScope );
-            String indent = calculateIndent( pom, starts );
-            int first = calculateFirst( starts, pom );
+        private String formatSection(
+                XMLEventReader reader,
+                String pom,
+                Format format,
+                int startOfSection,
+                int[] starts,
+                int[] ends,
+                XMLEvent endScope)
+                throws XMLStreamException {
+            String outdent = calculateOutdent(pom, endScope);
+            String indent = calculateIndent(pom, starts);
+            int first = calculateFirst(starts, pom);
             StringBuilder output = new StringBuilder();
-            output.append( pom.substring( startOfSection, first ).trim() );
+            output.append(pom.substring(startOfSection, first).trim());
             int i = 0;
             boolean firstGroupStarted = false;
-            for ( NodeGroup group : groups )
-            {
+            for (NodeGroup group : groups) {
                 boolean groupStarted = false;
-                for ( String node : group.nodes )
-                {
-                    if ( starts[i] != Integer.MAX_VALUE )
-                    {
-                        if ( firstGroupStarted && !groupStarted )
-                        {
-                            output.append( format.getLineSeparator() );
+                for (String node : group.nodes) {
+                    if (starts[i] != Integer.MAX_VALUE) {
+                        if (firstGroupStarted && !groupStarted) {
+                            output.append(format.getLineSeparator());
                         }
-                        addTextIfNotEmpty( output, indent, getPrecedingText( pom, starts[i], ends ), format );
-                        addTextIfNotEmpty( output, indent, pom.substring( starts[i], ends[i] ), format );
+                        addTextIfNotEmpty(output, indent, getPrecedingText(pom, starts[i], ends), format);
+                        addTextIfNotEmpty(output, indent, pom.substring(starts[i], ends[i]), format);
                         firstGroupStarted = true;
                         groupStarted = true;
                     }
                     ++i;
                 }
             }
-            int last = calculateLast( ends );
-            int afterSection = getPosOfNextEvent( reader );
+            int last = calculateLast(ends);
+            int afterSection = getPosOfNextEvent(reader);
             int offsetEndElement = endScope.getLocation().getCharacterOffset();
-            addTextIfNotEmpty( output, indent, pom.substring( last, offsetEndElement ), format );
-            addTextIfNotEmpty( output, outdent, pom.substring( offsetEndElement, afterSection ), format );
+            addTextIfNotEmpty(output, indent, pom.substring(last, offsetEndElement), format);
+            addTextIfNotEmpty(output, outdent, pom.substring(offsetEndElement, afterSection), format);
             return output.toString();
         }
 
-        private String calculateOutdent( String pom, XMLEvent endScope )
-        {
-            String before = pom.substring( 0, endScope.getLocation().getCharacterOffset() );
-            return substringAfterLast( before, "\n" );
+        private String calculateOutdent(String pom, XMLEvent endScope) {
+            String before = pom.substring(0, endScope.getLocation().getCharacterOffset());
+            return substringAfterLast(before, "\n");
         }
 
-        private int calculateFirst( int[] starts, String pom )
-        {
+        private int calculateFirst(int[] starts, String pom) {
             int first = pom.length();
-            for ( int start : starts )
-            {
-                first = min( first, start );
+            for (int start : starts) {
+                first = min(first, start);
             }
             return first;
         }
 
-        private int calculateLast( int[] ends )
-        {
+        private int calculateLast(int[] ends) {
             int last = 0;
-            for ( int end : ends )
-            {
-                last = max( last, end );
+            for (int end : ends) {
+                last = max(last, end);
             }
             return last;
         }
 
-        private String calculateIndent( String input, int[] starts )
-        {
+        private String calculateIndent(String input, int[] starts) {
             int numNodesWithSpaceIndent = 0;
             int numNodesWithTabIndent = 0;
             int spaceIndentTotal = 0;
             int tabIndentTotal = 0;
-            for ( int start : starts )
-            {
-                if ( start != Integer.MAX_VALUE )
-                {
-                    String indent = calculateIndent( input, start );
-                    if ( !indent.isEmpty() )
-                    {
-                        int numTabs = countMatches( indent, "\t" );
-                        if ( numTabs == indent.length() )
-                        {
+            for (int start : starts) {
+                if (start != Integer.MAX_VALUE) {
+                    String indent = calculateIndent(input, start);
+                    if (!indent.isEmpty()) {
+                        int numTabs = countMatches(indent, "\t");
+                        if (numTabs == indent.length()) {
                             ++numNodesWithTabIndent;
                             tabIndentTotal += numTabs;
-                        }
-                        else if ( !indent.contains( "\t" ) )
-                        {
+                        } else if (!indent.contains("\t")) {
                             ++numNodesWithSpaceIndent;
                             spaceIndentTotal += indent.length();
                         }
                     }
                 }
             }
-            if ( numNodesWithSpaceIndent == 0 && numNodesWithTabIndent == 0 )
-            {
+            if (numNodesWithSpaceIndent == 0 && numNodesWithTabIndent == 0) {
                 return "  ";
-            }
-            else if ( numNodesWithSpaceIndent > numNodesWithTabIndent )
-            {
+            } else if (numNodesWithSpaceIndent > numNodesWithTabIndent) {
                 int averageIndent = spaceIndentTotal / numNodesWithSpaceIndent;
-                return repeat( " ", averageIndent );
-            }
-            else
-            {
+                return repeat(" ", averageIndent);
+            } else {
                 int averageIndent = tabIndentTotal / numNodesWithTabIndent;
-                return repeat( "\t", averageIndent );
+                return repeat("\t", averageIndent);
             }
         }
 
-        private String calculateIndent( String input, int startOfTag )
-        {
-            for ( int i = startOfTag; i > 1; --i )
-            {
-                String character = input.substring( i - 1, i );
-                if ( !isWhitespace( character ) || "\n".equals( character ) || "\r".equals( character ) )
-                {
-                    return input.substring( i, startOfTag );
+        private String calculateIndent(String input, int startOfTag) {
+            for (int i = startOfTag; i > 1; --i) {
+                String character = input.substring(i - 1, i);
+                if (!isWhitespace(character) || "\n".equals(character) || "\r".equals(character)) {
+                    return input.substring(i, startOfTag);
                 }
             }
             return input;
         }
 
-        private String getPrecedingText( String pom, int start, int[] ends )
-        {
+        private String getPrecedingText(String pom, int start, int[] ends) {
             int startPrecedingText = -1;
-            for ( int end : ends )
-            {
-                if ( end < start )
-                {
-                    startPrecedingText = max( startPrecedingText, end );
+            for (int end : ends) {
+                if (end < start) {
+                    startPrecedingText = max(startPrecedingText, end);
                 }
             }
-            if ( startPrecedingText != -1 )
-            {
-                return pom.substring( startPrecedingText, start );
-            }
-            else
-            {
+            if (startPrecedingText != -1) {
+                return pom.substring(startPrecedingText, start);
+            } else {
                 return "";
             }
         }
 
-        private void addTextIfNotEmpty( StringBuilder output, String indent, String text, Format format )
-        {
+        private void addTextIfNotEmpty(StringBuilder output, String indent, String text, Format format) {
             String trimmedText = text.trim();
-            if ( trimmedText.length() != 0 )
-            {
-                output.append( format.getLineSeparator() );
-                output.append( indent );
-                output.append( trimmedText );
+            if (trimmedText.length() != 0) {
+                output.append(format.getLineSeparator());
+                output.append(indent);
+                output.append(trimmedText);
             }
         }
 
-        private int getPosOfNextEvent( XMLEventReader reader )
-            throws XMLStreamException
-        {
+        private int getPosOfNextEvent(XMLEventReader reader) throws XMLStreamException {
             return reader.peek().getLocation().getCharacterOffset();
         }
 
-        private String substringBeforeLast( String str, String separator )
-        {
-            int endIndex = str.lastIndexOf( separator );
-            return str.substring( 0, endIndex );
+        private String substringBeforeLast(String str, String separator) {
+            int endIndex = str.lastIndexOf(separator);
+            return str.substring(0, endIndex);
         }
 
-        private String substringAfterLast( String str, String separator )
-        {
-            int beginIndex = str.lastIndexOf( separator ) + 1;
-            return str.substring( beginIndex );
+        private String substringAfterLast(String str, String separator) {
+            int beginIndex = str.lastIndexOf(separator) + 1;
+            return str.substring(beginIndex);
         }
     }
 
-    private static class NodeGroup
-    {
+    private static class NodeGroup {
         final List<String> nodes;
 
-        NodeGroup( String... nodes )
-        {
-            this.nodes = asList( nodes );
+        NodeGroup(String... nodes) {
+            this.nodes = asList(nodes);
         }
     }
 }

@@ -22,8 +22,7 @@ package org.codehaus.mojo.tidy.task;
 /**
  * Specification of the output format used by the Tidy plugin.
  */
-class Format
-{
+class Format {
     private final String lineSeparator;
 
     /**
@@ -31,8 +30,7 @@ class Format
      *
      * @param lineSeparator the line separator.
      */
-    Format( String lineSeparator )
-    {
+    Format(String lineSeparator) {
         this.lineSeparator = lineSeparator;
     }
 
@@ -41,8 +39,7 @@ class Format
      *
      * @return the characters that should be used as line separator.
      */
-    String getLineSeparator()
-    {
+    String getLineSeparator() {
         return lineSeparator;
     }
 }

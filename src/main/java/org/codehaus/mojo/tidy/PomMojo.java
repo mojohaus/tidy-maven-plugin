@@ -19,33 +19,26 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
+import java.io.IOException;
+
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-
-import java.io.IOException;
 
 import static org.codehaus.plexus.util.FileUtils.fileWrite;
 
 /**
  * Tidy up the <code>pom.xml</code> into the canonical order.
  */
-@Mojo( name = "pom" )
-public class PomMojo
-    extends TidyMojo
-{
+@Mojo(name = "pom")
+public class PomMojo extends TidyMojo {
     @Override
-    protected void executeForPom( String pom )
-        throws MojoExecutionException, MojoFailureException
-    {
-        try
-        {
-            String tidyPom = tidy( pom );
-            fileWrite( getPomFile(), tidyPom );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Failed to write the tidy POM.", e );
+    protected void executeForPom(String pom) throws MojoExecutionException, MojoFailureException {
+        try {
+            String tidyPom = tidy(pom);
+            fileWrite(getPomFile(), tidyPom);
+        } catch (IOException e) {
+            throw new MojoExecutionException("Failed to write the tidy POM.", e);
         }
     }
 }

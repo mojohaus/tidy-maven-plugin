@@ -19,6 +19,9 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.codehaus.plexus.util.IOUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,41 +29,42 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
-@RunWith( Parameterized.class )
-public class PomTidyTest
-{
-    @Parameters( name = "{0}" )
-    public static Iterable<String> tests()
-    {
-        return asList( "add-xml-declaration", "complete-pom", "do-not-mix-tab-and-spaces", "groupid-artifactid-version",
-                       "plugin-config-with-maven-element-names", "pom-space-indent", "pom-tab-indent",
-                       "pom-with-comments", "pom-with-crlf", "pom-with-line-without-indent", "pom-with-profiles",
-                       "pom-with-reporting", "project-single-line" );
+@RunWith(Parameterized.class)
+public class PomTidyTest {
+    @Parameters(name = "{0}")
+    public static Iterable<String> tests() {
+        return asList(
+                "add-xml-declaration",
+                "complete-pom",
+                "do-not-mix-tab-and-spaces",
+                "groupid-artifactid-version",
+                "plugin-config-with-maven-element-names",
+                "pom-space-indent",
+                "pom-tab-indent",
+                "pom-with-comments",
+                "pom-with-crlf",
+                "pom-with-line-without-indent",
+                "pom-with-profiles",
+                "pom-with-reporting",
+                "project-single-line");
     }
 
-    @SuppressWarnings( "checkstyle:VisibilityModifier" )
-    @Parameter( 0 )
+    @SuppressWarnings("checkstyle:VisibilityModifier")
+    @Parameter(0)
     public String name;
 
     @Test
-    public void generatesTidyPom()
-        throws Exception
-    {
-        String pom = readPom( "pom.xml" );
-        String tidyPom = new PomTidy().tidy( pom );
-        assertEquals( readPom( "pom-expected.xml" ), tidyPom );
+    public void generatesTidyPom() throws Exception {
+        String pom = readPom("pom.xml");
+        String tidyPom = new PomTidy().tidy(pom);
+        assertEquals(readPom("pom-expected.xml"), tidyPom);
     }
 
-    private String readPom( String filename )
-        throws IOException
-    {
-        InputStream is = getClass().getResourceAsStream( name + "/" + filename );
-        return IOUtil.toString( is );
+    private String readPom(String filename) throws IOException {
+        InputStream is = getClass().getResourceAsStream(name + "/" + filename);
+        return IOUtil.toString(is);
     }
 }

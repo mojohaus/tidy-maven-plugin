@@ -20,6 +20,7 @@ package org.codehaus.mojo.tidy.task;
  */
 
 import javax.xml.stream.XMLStreamException;
+
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -27,21 +28,19 @@ import static java.util.Arrays.asList;
 /**
  * Tidy up a POM into the canonical order.
  */
-public class PomTidy
-{
+public class PomTidy {
     private static final FormatIdentifier FORMAT_IDENTIFIER = new FormatIdentifier();
 
-    private static final List<TidyTask> TIDY_TASKS =
-        asList( new EnsureXmlHeader(), new EnsureOrderAndIndent(), new EnsureSingleLineProjectStartTag(),
-                new EnsureTrailingNewLine() );
+    private static final List<TidyTask> TIDY_TASKS = asList(
+            new EnsureXmlHeader(),
+            new EnsureOrderAndIndent(),
+            new EnsureSingleLineProjectStartTag(),
+            new EnsureTrailingNewLine());
 
-    public String tidy( String pom )
-        throws XMLStreamException
-    {
-        Format format = FORMAT_IDENTIFIER.identifyFormat( pom );
-        for ( TidyTask task : TIDY_TASKS )
-        {
-            pom = task.tidyPom( pom, format );
+    public String tidy(String pom) throws XMLStreamException {
+        Format format = FORMAT_IDENTIFIER.identifyFormat(pom);
+        for (TidyTask task : TIDY_TASKS) {
+            pom = task.tidyPom(pom, format);
         }
         return pom;
     }
