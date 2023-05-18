@@ -19,27 +19,24 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
-import org.codehaus.stax2.XMLInputFactory2;
-
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
+
 import java.io.StringReader;
 
-class XMLEventReaderFactory
-{
+import org.codehaus.stax2.XMLInputFactory2;
+
+class XMLEventReaderFactory {
     private static final XMLInputFactory XML_INPUT_FACTORY = createInputFactory();
 
-    static XMLEventReader createEventReaderForPom( String pom )
-        throws XMLStreamException
-    {
-        return XML_INPUT_FACTORY.createXMLEventReader( new StringReader( pom ) );
+    static XMLEventReader createEventReaderForPom(String pom) throws XMLStreamException {
+        return XML_INPUT_FACTORY.createXMLEventReader(new StringReader(pom));
     }
 
-    private static XMLInputFactory createInputFactory()
-    {
+    private static XMLInputFactory createInputFactory() {
         XMLInputFactory inputFactory = XMLInputFactory2.newInstance();
-        inputFactory.setProperty( XMLInputFactory2.P_PRESERVE_LOCATION, true );
+        inputFactory.setProperty(XMLInputFactory2.P_PRESERVE_LOCATION, true);
         return inputFactory;
     }
 }

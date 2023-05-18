@@ -24,8 +24,7 @@ import javax.xml.stream.XMLStreamException;
 /**
  * A single task that tidies a POM.
  */
-interface TidyTask
-{
+interface TidyTask {
     /**
      * Tidies the POM.
      *
@@ -34,6 +33,5 @@ interface TidyTask
      * @return the tidy POM.
      * @throws XMLStreamException
      */
-    String tidyPom( String pom, Format format )
-        throws XMLStreamException;
+    String tidyPom(String pom, Format format) throws XMLStreamException;
 }

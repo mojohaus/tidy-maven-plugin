@@ -25,47 +25,36 @@ import javax.xml.stream.events.XMLEvent;
 
 import static org.codehaus.mojo.tidy.task.XMLEventReaderFactory.createEventReaderForPom;
 
-class EnsureSingleLineProjectStartTag
-    implements TidyTask
-{
+class EnsureSingleLineProjectStartTag implements TidyTask {
     private static final String PROJECT_START_TAG = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" "
-        + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-        + "xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">";
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+            + "xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\">";
 
     @Override
-    public String tidyPom( String pom, Format format )
-        throws XMLStreamException
-    {
-        XMLEventReader eventReader = createEventReaderForPom( pom );
-        try
-        {
-            return tidyProjectStartTag( pom, eventReader );
-        }
-        finally
-        {
+    public String tidyPom(String pom, Format format) throws XMLStreamException {
+        XMLEventReader eventReader = createEventReaderForPom(pom);
+        try {
+            return tidyProjectStartTag(pom, eventReader);
+        } finally {
             eventReader.close();
         }
     }
 
-    private String tidyProjectStartTag( String pom, XMLEventReader eventReader )
-        throws XMLStreamException
-    {
-        while ( eventReader.hasNext() )
-        {
+    private String tidyProjectStartTag(String pom, XMLEventReader eventReader) throws XMLStreamException {
+        while (eventReader.hasNext()) {
             XMLEvent event = eventReader.nextEvent();
-            if ( event.isStartElement() && event.asStartElement().getName().getLocalPart().equals( "project" ) )
-            {
-                return replaceProjectStartTag( pom, eventReader, event );
+            if (event.isStartElement()
+                    && event.asStartElement().getName().getLocalPart().equals("project")) {
+                return replaceProjectStartTag(pom, eventReader, event);
             }
         }
-        throw new IllegalArgumentException( "The POM has no project node." );
+        throw new IllegalArgumentException("The POM has no project node.");
     }
 
-    private String replaceProjectStartTag( String pom, XMLEventReader eventReader, XMLEvent event )
-        throws XMLStreamException
-    {
+    private String replaceProjectStartTag(String pom, XMLEventReader eventReader, XMLEvent event)
+            throws XMLStreamException {
         int start = event.getLocation().getCharacterOffset();
         int nextChar = eventReader.nextEvent().getLocation().getCharacterOffset();
-        return pom.substring( 0, start ) + PROJECT_START_TAG + pom.substring( nextChar );
+        return pom.substring(0, start) + PROJECT_START_TAG + pom.substring(nextChar);
     }
 }

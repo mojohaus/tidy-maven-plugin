@@ -21,13 +21,9 @@ package org.codehaus.mojo.tidy.task;
 
 import javax.xml.stream.XMLStreamException;
 
-class EnsureTrailingNewLine
-    implements TidyTask
-{
+class EnsureTrailingNewLine implements TidyTask {
     @Override
-    public String tidyPom( String pom, Format format )
-        throws XMLStreamException
-    {
+    public String tidyPom(String pom, Format format) throws XMLStreamException {
         return pom.trim() + format.getLineSeparator();
     }
 }

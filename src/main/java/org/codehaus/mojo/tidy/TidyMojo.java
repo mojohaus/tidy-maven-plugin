@@ -19,12 +19,10 @@ package org.codehaus.mojo.tidy;
  * under the License.
  */
 
-import static org.codehaus.plexus.util.FileUtils.fileRead;
+import javax.xml.stream.XMLStreamException;
 
 import java.io.File;
 import java.io.IOException;
-
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -33,25 +31,25 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.tidy.task.PomTidy;
 
+import static org.codehaus.plexus.util.FileUtils.fileRead;
+
 /**
  * An abstract base class for Mojos of the Tidy plugin. Handles common
  * configuration issues and provides the POM as String.
  */
-public abstract class TidyMojo
-    extends AbstractMojo
-{
+public abstract class TidyMojo extends AbstractMojo {
     private static final PomTidy POM_TIDY = new PomTidy();
 
     /**
      * The Maven Project.
      */
-    @Parameter( defaultValue = "${project}", required = true, readonly = true )
+    @Parameter(defaultValue = "${project}", required = true, readonly = true)
     protected MavenProject project;
 
     /**
      * Set this to 'true' to skip execution.
      */
-    @Parameter( property = "tidy.skip", defaultValue = "false" )
+    @Parameter(property = "tidy.skip", defaultValue = "false")
     protected boolean skip;
 
     /**
@@ -63,59 +61,44 @@ public abstract class TidyMojo
      * @throws MojoFailureException   if an expected problem (such as a compilation failure) occurs.
      *                                Throwing this exception causes a "BUILD FAILURE" message to be displayed.
      */
-    protected abstract void executeForPom( String pom )
-        throws MojoExecutionException, MojoFailureException;
+    protected abstract void executeForPom(String pom) throws MojoExecutionException, MojoFailureException;
 
     @Override
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
-        if ( skip )
-        {
-            getLog().info( "Tidy is skipped." );
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("Tidy is skipped.");
             return;
         }
         String pom = getProjectPom();
-        executeForPom( pom );
+        executeForPom(pom);
     }
 
     /**
      * Returns the project's POM.
      */
-    private String getProjectPom()
-        throws MojoExecutionException
-    {
-        try
-        {
-            return fileRead( getPomFile() );
-        }
-        catch ( IOException e )
-        {
-            throw new MojoExecutionException( "Failed to read the POM.", e );
+    private String getProjectPom() throws MojoExecutionException {
+        try {
+            return fileRead(getPomFile());
+        } catch (IOException e) {
+            throw new MojoExecutionException("Failed to read the POM.", e);
         }
     }
 
     /**
      * Returns the file of the POM.
      */
-    protected File getPomFile()
-    {
+    protected File getPomFile() {
         return project.getFile();
     }
 
     /**
      * Tidy the given POM.
      */
-    protected String tidy( String pom )
-        throws MojoExecutionException
-    {
-        try
-        {
-            return POM_TIDY.tidy( pom );
-        }
-        catch ( XMLStreamException e )
-        {
-            throw new MojoExecutionException( e.getMessage(), e );
+    protected String tidy(String pom) throws MojoExecutionException {
+        try {
+            return POM_TIDY.tidy(pom);
+        } catch (XMLStreamException e) {
+            throw new MojoExecutionException(e.getMessage(), e);
         }
     }
 }

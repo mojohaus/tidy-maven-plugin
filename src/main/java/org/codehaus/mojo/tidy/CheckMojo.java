@@ -28,19 +28,14 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Checks that the <code>pom.xml</code> is tidy. Fails the build if <code>mvn tidy:pom</code> would
  * create a different <code>pom.xml</code> than the current one.
  */
-@Mojo( name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true )
-public class CheckMojo
-    extends TidyMojo
-{
+@Mojo(name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
+public class CheckMojo extends TidyMojo {
     @Override
-    protected void executeForPom( String pom )
-        throws MojoExecutionException, MojoFailureException
-    {
-        String tidyPom = tidy( pom );
-        if ( !pom.equals( tidyPom ) )
-        {
+    protected void executeForPom(String pom) throws MojoExecutionException, MojoFailureException {
+        String tidyPom = tidy(pom);
+        if (!pom.equals(tidyPom)) {
             throw new MojoFailureException(
-                "The POM violates the code style. Please format it by running `mvn tidy:pom`." );
+                    "The POM violates the code style. Please format it by running `mvn tidy:pom`.");
         }
     }
 }

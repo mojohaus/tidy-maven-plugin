@@ -21,19 +21,12 @@ package org.codehaus.mojo.tidy.task;
 
 import javax.xml.stream.XMLStreamException;
 
-class EnsureXmlHeader
-    implements TidyTask
-{
+class EnsureXmlHeader implements TidyTask {
     @Override
-    public String tidyPom( String pom, Format format )
-        throws XMLStreamException
-    {
-        if ( pom.startsWith( "<?xml" ) )
-        {
+    public String tidyPom(String pom, Format format) throws XMLStreamException {
+        if (pom.startsWith("<?xml")) {
             return pom;
-        }
-        else
-        {
+        } else {
             return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + format.getLineSeparator() + pom;
         }
     }
