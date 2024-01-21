@@ -64,7 +64,7 @@
   </developers>
 
   <prerequisites>
-    <maven>${maven.version}</maven>
+    <maven>${mavenVersion}</maven>
   </prerequisites>
 
   <scm>
@@ -75,7 +75,7 @@
   </scm>
 
   <properties>
-    <maven.version>3.5.4</maven.version>
+    <mavenVersion>3.6.3</mavenVersion>
     <project.build.outputTimestamp>2022-09-30T06:33:55Z</project.build.outputTimestamp>
   </properties>
 
@@ -93,13 +93,13 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>${maven.version}</version>
+      <version>${mavenVersion}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>${maven.version}</version>
+      <version>${mavenVersion}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
