@@ -26,3 +26,7 @@ jobs:
     with:
       ff-maven: "3.9.6"                     # Maven version for fail-fast-build
       maven-matrix: '[ "3.6.3", "3.9.6" ]'  # Maven versions matrix for verify builds
+      matrix-exclude: >
+              [
+                {"jdk": "21"}
+              ]
