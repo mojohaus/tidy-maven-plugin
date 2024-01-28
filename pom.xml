@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>mojo-parent</artifactId>
-    <version>74</version>
+    <version>78</version>
     <relativePath />
   </parent>
 
@@ -75,7 +75,6 @@
   </scm>
 
   <properties>
-    <mavenVersion>3.6.3</mavenVersion>
     <project.build.outputTimestamp>2022-09-30T06:33:55Z</project.build.outputTimestamp>
   </properties>
 
@@ -122,7 +121,7 @@
     <!-- tests -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
