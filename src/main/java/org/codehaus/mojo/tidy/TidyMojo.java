@@ -50,7 +50,7 @@ public abstract class TidyMojo extends AbstractMojo {
      * The path of the pom file to process.
      *
      * <p>If unset, the value of <code>project.file</code> will be used instead.</p>
-     * 
+     *
      * @since 1.3.0
      */
     @Parameter(property = "tidy.pomFile")
