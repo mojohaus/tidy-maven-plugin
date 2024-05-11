@@ -49,11 +49,9 @@ public abstract class TidyMojo extends AbstractMojo {
     /**
      * The path of the pom file to process.
      *
-     * <p>If unset, the value of <code>project.file</code> will be used instead.</p>
-     *
      * @since 1.3.0
      */
-    @Parameter(property = "tidy.pomFile")
+    @Parameter(property = "tidy.pomFile", defaultValue = "${project.file}")
     private File pomFile;
 
     /**
@@ -98,11 +96,7 @@ public abstract class TidyMojo extends AbstractMojo {
      * Returns the file of the POM.
      */
     protected File getPomFile() {
-        File result = this.pomFile;
-        if (null == result) {
-            result = this.project.getFile();
-        }
-        return result;
+        return this.pomFile;
     }
 
     /**
