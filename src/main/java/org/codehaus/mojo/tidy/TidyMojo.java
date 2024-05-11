@@ -47,6 +47,14 @@ public abstract class TidyMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
+     * The path of the pom file to process.
+     *
+     * @since 1.3.0
+     */
+    @Parameter(property = "tidy.pomFile", defaultValue = "${project.file}")
+    private File pomFile;
+
+    /**
      * Set this to 'true' to skip execution.
      */
     @Parameter(property = "tidy.skip", defaultValue = "false")
@@ -88,7 +96,7 @@ public abstract class TidyMojo extends AbstractMojo {
      * Returns the file of the POM.
      */
     protected File getPomFile() {
-        return project.getFile();
+        return this.pomFile;
     }
 
     /**
