@@ -6,7 +6,7 @@ The ASF licenses this file to You under the Apache License, Version 2.0
 (the "License"); you may not use this file except in compliance with
 the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,12 +37,12 @@ be found on the [usage page](./usage.html).
 
 To tidy up the `pom.xml`, simply invoke it on your project, e.g.
 
-    mvn tidy:pom
+        mvn tidy:pom
 
 The `pom.xml` file will
 
 * be rewritten according to the
-[POM Code Convention](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
-of the Maven team.
+  [POM Code Convention](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
+  of the Maven team.
 * have the nodes `groupId`, `artifactId` and `version` always in this order.
 
