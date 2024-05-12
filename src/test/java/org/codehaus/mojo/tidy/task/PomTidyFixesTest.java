@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PomTidyFixesTest {
+class PomTidyFixesTest {
 
     protected static final String PATH = "fixes/order-and-indent-start-element-of-scope/";
 

@@ -5,11 +5,6 @@
 
   <artifactId>pom-space-indent</artifactId>
   <groupId>org.codehaus.mojo.tidy.its</groupId>
-  <parent>
-    <groupId>org.codehaus</groupId>
-    <artifactId>codehaus-parent</artifactId>
-    <version>4</version>
-  </parent>
   <modelVersion>4.0.0</modelVersion>
   <version>1.0-SNAPSHOT</version>
   <description>Test of tidy:pom on a pom with all elements.</description>
