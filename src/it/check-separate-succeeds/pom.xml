@@ -3,11 +3,6 @@
 
   <artifactId>pom-check-fails</artifactId>
   <groupId>org.codehaus.mojo.tidy.its</groupId>
-  <parent>
-    <groupId>org.codehaus</groupId>
-    <artifactId>codehaus-parent</artifactId>
-    <version>4</version>
-  </parent>
   <modelVersion>4.0.0</modelVersion>
   <version>1.0-SNAPSHOT</version>
 
@@ -18,7 +13,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>tidy-maven-plugin</artifactId>
-        <version>@pom.version@</version>
+        <version>@project.version@</version>
         <executions>
           <execution>
             <id>validate</id>

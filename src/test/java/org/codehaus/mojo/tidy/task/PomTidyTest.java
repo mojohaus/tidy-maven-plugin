@@ -30,7 +30,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PomTidyTest {
+class PomTidyTest {
 
     @ParameterizedTest(name = "{0}")
     @ValueSource(
