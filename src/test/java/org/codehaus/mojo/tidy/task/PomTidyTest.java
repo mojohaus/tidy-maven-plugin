@@ -47,7 +47,8 @@ class PomTidyTest {
                 "pom-with-line-without-indent",
                 "pom-with-profiles",
                 "pom-with-reporting",
-                "project-single-line"
+                "project-single-line",
+                "project-support-4-1-0-attributes"
             })
     void generatesTidyPom(String name) throws IOException, XMLStreamException {
         String pom = readPom(name, "pom.xml");
