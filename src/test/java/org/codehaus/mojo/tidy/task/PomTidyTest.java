@@ -49,6 +49,7 @@ class PomTidyTest {
                 "pom-with-reporting",
                 "project-single-line",
                 "project-support-4-1-0-attributes",
+                "project-support-4-1-0-attributes-with-unordered-nodes",
                 "project-support-4-1-0-model-version"
             })
     void generatesTidyPom(String name) throws IOException, XMLStreamException {

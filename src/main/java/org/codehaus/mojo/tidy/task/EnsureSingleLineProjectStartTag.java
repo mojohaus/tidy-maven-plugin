@@ -93,7 +93,7 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
     }
 
     private String identifyModelVersion(XMLEventReader eventReader) throws XMLStreamException {
-        XMLEvent event = eventReader.nextTag();
+        XMLEvent event = eventReader.nextEvent();
         while (null != event) {
             if (event.isStartElement()) {
                 if (event.asStartElement().getName().getLocalPart().equals("project")) {
@@ -101,33 +101,53 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
                 }
                 event = skipNestedContent(eventReader);
             } else {
-                event = eventReader.nextTag();
+                event = eventReader.nextEvent();
             }
         }
         return null;
     }
 
+    /**
+     * Moves forward the specified eventReader until it meet the end tag for the current start tag.
+     *
+     * PREREQUISITE: at START of an element
+     * RESULT: end event or null
+     */
     private XMLEvent skipNestedContent(XMLEventReader eventReader) throws XMLStreamException {
         int nestedSize = 0;
-        XMLEvent xmlEvent = eventReader.nextTag();
-        while (xmlEvent != null && nestedSize >= 0) {
+        XMLEvent xmlEvent = eventReader.nextEvent();
+        while (xmlEvent != null) {
             if (xmlEvent.isEndElement()) {
+                if (nestedSize == 0) {
+                    return xmlEvent;
+                }
                 nestedSize--;
-            } else {
+            } else if (xmlEvent.isStartElement()) {
                 nestedSize++;
             }
-            xmlEvent = eventReader.nextTag();
+            xmlEvent = eventReader.nextEvent();
         }
-        return xmlEvent;
+        return null;
     }
 
+    /**
+     * Resolves the model version from the specified context.
+     *
+     * PREREQUISITES: at the START position of an XML node which may have a direct child whose name would be modelVersion
+     */
     private String resolveModelVersion(XMLEventReader eventReader) throws XMLStreamException {
-        XMLEvent xmlEvent = eventReader.nextTag();
-        while (xmlEvent != null && xmlEvent.isStartElement()) {
-            if (xmlEvent.asStartElement().getName().getLocalPart().equals("modelVersion")) {
-                return eventReader.getElementText();
+        XMLEvent xmlEvent = eventReader.nextEvent();
+        while (xmlEvent != null) {
+            if (xmlEvent.isStartElement()) {
+                if (xmlEvent.asStartElement().getName().getLocalPart().equals("modelVersion")) {
+                    return eventReader.getElementText();
+                } else {
+                    xmlEvent = skipNestedContent(eventReader);
+                }
+            } else if (xmlEvent.isEndElement()) {
+                return null;
             }
-            xmlEvent = skipNestedContent(eventReader);
+            xmlEvent = eventReader.nextEvent();
         }
         return null;
     }

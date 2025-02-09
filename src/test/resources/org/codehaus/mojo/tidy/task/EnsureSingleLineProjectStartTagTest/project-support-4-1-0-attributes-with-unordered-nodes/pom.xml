@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd"
+         root="true"
+         child.project.url.inherit.append.path="true"
+         preserve.model.version="true"
+>
+  <groupId>org.codehaus.mojo.tidy.its</groupId>
+  <artifactId>add-xml-declaration</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <description>Test of tidy:pom ensuring project element on a single row in a pom and supports 4.1.0 attributes even though ordering is not satisfied</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <modelVersion>4.1.0</modelVersion>
+</project>
