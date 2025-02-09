@@ -25,6 +25,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,22 +42,19 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
     private static final String PROJECT_START_TAG = "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" "
             + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
             + "xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd\"";
-    
-    private static final Collection<QName> PROJECT_4_0_ATTRIBUTES = Collections.singleton(
-        new QName(null, "child.project.url.inherit.append.path")
-    );
-    
-    private static final Collection<QName> PROJECT_4_1_ATTRIBUTES = Collections.unmodifiableSet(
-            new HashSet<>(
-                    Arrays.asList(
-                            new QName(null, "child.project.url.inherit.append.path"),
-                            new QName(null, "root"),
-                            new QName(null, "preserve.model.version")
-                    ))
-    );
-    
-    private static final String PROJECT_4_1_START_TAG = "<project xmlns=\"http://maven.apache.org/POM/4.1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
-            "  xsi:schemaLocation=\"http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd\"";
+
+    private static final Collection<QName> PROJECT_4_0_ATTRIBUTES =
+            Collections.singleton(new QName(null, "child.project.url.inherit.append.path"));
+
+    private static final Collection<QName> PROJECT_4_1_ATTRIBUTES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+                    new QName(null, "child.project.url.inherit.append.path"),
+                    new QName(null, "root"),
+                    new QName(null, "preserve.model.version"))));
+
+    private static final String PROJECT_4_1_START_TAG =
+            "<project xmlns=\"http://maven.apache.org/POM/4.1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+                    + "  xsi:schemaLocation=\"http://maven.apache.org/POM/4.1.0 https://maven.apache.org/xsd/maven-4.1.0.xsd\"";
 
     @Override
     public String tidyPom(String pom, Format format) throws XMLStreamException {
@@ -134,7 +132,9 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
         return null;
     }
 
-    private String tidyProjectStartTag(String pom, XMLEventReader eventReader, String projectStartTag, Collection<QName> additionalProperties) throws XMLStreamException {
+    private String tidyProjectStartTag(
+            String pom, XMLEventReader eventReader, String projectStartTag, Collection<QName> additionalProperties)
+            throws XMLStreamException {
         while (eventReader.hasNext()) {
             XMLEvent event = eventReader.nextEvent();
             if (event.isStartElement()
@@ -145,7 +145,12 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
         throw new IllegalArgumentException("The POM has no project node.");
     }
 
-    private String replaceProjectStartTag(String pom, XMLEventReader eventReader, XMLEvent event, String startTag, Collection<QName> additionalProperties)
+    private String replaceProjectStartTag(
+            String pom,
+            XMLEventReader eventReader,
+            XMLEvent event,
+            String startTag,
+            Collection<QName> additionalProperties)
             throws XMLStreamException {
         int start = event.getLocation().getCharacterOffset();
         final Map<QName, String> additionalPropertiesMap;
@@ -176,15 +181,7 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
                 } else {
                     result.append(additionalProperty.getPrefix()).append(':').append(additionalProperty.getLocalPart());
                 }
-                result.append('=')
-                        .append(
-                                StringUtils.quoteAndEscape(
-                                        value,
-                                        '"',
-                                        new char[]{'"', '\\'},
-                                        '\\',
-                                        true)
-                        );
+                result.append('=').append(StringUtils.quoteAndEscape(value, '"', new char[] {'"', '\\'}, '\\', true));
             }
         }
         return result.append('>').append(pom.substring(nextChar)).toString();
