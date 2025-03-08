@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>tidy-maven-plugin</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Tidy Maven Plugin</name>
@@ -70,12 +70,12 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/tidy-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/tidy-maven-plugin.git</developerConnection>
-    <tag>1.4.0</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/mojohaus/tidy-maven-plugin/tree/master</url>
   </scm>
 
   <properties>
-    <project.build.outputTimestamp>2025-03-08T07:55:46Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2025-03-08T07:55:57Z</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
