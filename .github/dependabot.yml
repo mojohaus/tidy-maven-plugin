@@ -7,6 +7,7 @@ updates:
       interval: monthly
     groups:
       maven:
+        patterns: ["*"]
         update-types: ["minor", "patch"]
 
   - package-ecosystem: github-actions
