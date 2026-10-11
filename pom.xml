@@ -64,7 +64,7 @@
   </developers>
 
   <prerequisites>
-    <maven>${mavenVersion}</maven>
+    <maven>3.9.0</maven>
   </prerequisites>
 
   <scm>
@@ -78,6 +78,8 @@
     <!-- run the ITs in parallel, one per CPU core -->
     <invoker.parallelThreads>1C</invoker.parallelThreads>
     <project.build.outputTimestamp>2026-09-11T21:29:02Z</project.build.outputTimestamp>
+    <mavenVersion>3.9.16</mavenVersion>
+    <minimalMavenBuildVersion>3.9.0</minimalMavenBuildVersion>
   </properties>
 
   <dependencyManagement>
