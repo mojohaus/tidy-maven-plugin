@@ -19,8 +19,6 @@ package org.codehaus.mojo.tidy.task;
  * under the License.
  */
 
-import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -52,7 +50,7 @@ class PomTidyTest {
                 "project-support-4-1-0-attributes-with-unordered-nodes",
                 "project-support-4-1-0-model-version"
             })
-    void generatesTidyPom(String name) throws IOException, XMLStreamException {
+    void generatesTidyPom(String name) throws Exception {
         String pom = readPom(name, "pom.xml");
         String tidyPom = new PomTidy().tidy(pom);
         assertEquals(readPom(name, "pom-expected.xml"), tidyPom);
