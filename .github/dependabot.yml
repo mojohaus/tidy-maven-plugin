@@ -3,6 +3,10 @@ version: 2
 updates:
   - package-ecosystem: maven
     directory: "/"
+    exclude-paths:
+      - "src/it/**"
+      - "src/it-repo/**"
+      - "src/test/resources/**"
     schedule:
       interval: monthly
     groups:

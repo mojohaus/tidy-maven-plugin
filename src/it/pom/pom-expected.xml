@@ -100,7 +100,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.codehaus.plexus</groupId>
+        <groupId>localhost</groupId>
         <artifactId>plexus-utils</artifactId>
         <version>3.0.24</version>
         <type>jar</type>
@@ -122,7 +122,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
+      <groupId>localhost</groupId>
       <artifactId>log4j-api</artifactId>
       <version>2.19.0</version>
       <type>bundle</type>
