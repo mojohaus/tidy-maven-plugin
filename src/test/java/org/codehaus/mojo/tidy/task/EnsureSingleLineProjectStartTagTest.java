@@ -1,7 +1,5 @@
 package org.codehaus.mojo.tidy.task;
 
-import javax.xml.stream.XMLStreamException;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +23,7 @@ class EnsureSingleLineProjectStartTagTest {
                 "project-support-4-1-0-attributes-with-unordered-nodes",
                 "project-support-4-1-0-model-version"
             })
-    void applyTidying(String name) throws IOException, XMLStreamException {
+    void applyTidying(String name) throws Exception {
         String pom = readPom(name, "pom.xml");
         String tidyPom = new EnsureSingleLineProjectStartTag().tidyPom(pom, new FormatIdentifier().identifyFormat(pom));
         assertEquals(readPom(name, "pom-expected.xml"), tidyPom);
