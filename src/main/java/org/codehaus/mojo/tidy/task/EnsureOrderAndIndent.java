@@ -134,6 +134,8 @@ class EnsureOrderAndIndent implements TidyTask {
                         tidyPom.append(pom.substring(posFirstUnformatted, pos));
                         tidyPom.append(formatSection(reader, pom, format));
                         posFirstUnformatted = getPosOfNextEvent(reader);
+                        // the end element of the section was consumed by formatSection
+                        path = substringBeforeLast(path, "/");
                     }
                 } else if (event.isEndElement()) {
                     path = substringBeforeLast(path, "/");
