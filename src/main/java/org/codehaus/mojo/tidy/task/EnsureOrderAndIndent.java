@@ -158,6 +158,10 @@ class EnsureOrderAndIndent implements TidyTask {
             int[] starts = new int[sequence.size()];
             int[] ends = new int[sequence.size()];
             XMLEvent endScope = calculateStartsAndEnds(reader, starts, ends);
+            if (calculateFirst(starts, pom) == pom.length()) {
+                // none of the children to sort is present: keep the section as it is
+                return pom.substring(startOfSection, getPosOfNextEvent(reader));
+            }
             return formatSection(reader, pom, format, startOfSection, starts, ends, endScope);
         }
 
