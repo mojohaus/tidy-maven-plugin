@@ -91,10 +91,23 @@ class EnsureOrderAndIndent implements TidyTask {
             new SectionSorter(
                     "/project/distributionManagement/relocation", new NodeGroup("groupId", "artifactId", "version")));
 
+    private final boolean enforceIndent;
+
+    EnsureOrderAndIndent() {
+        this(false);
+    }
+
+    EnsureOrderAndIndent(boolean enforceIndent) {
+        this.enforceIndent = enforceIndent;
+    }
+
     @Override
     public String tidyPom(String pom, Format format) throws XMLStreamException {
         for (SectionSorter sorter : SECTION_SORTERS) {
             pom = sorter.sortSections(pom, format);
+        }
+        if (enforceIndent) {
+            pom = PomIndenter.indent(pom);
         }
         return pom;
     }

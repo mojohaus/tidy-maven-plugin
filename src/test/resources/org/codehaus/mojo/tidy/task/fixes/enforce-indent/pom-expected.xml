@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.example</groupId>
+  <artifactId>demo</artifactId>
+  <version>1.0</version>
+
+  <description>
+        Text that spans lines
+            keeps its own indentation.
+    </description>
+
+  <!-- A comment
+          with a second line -->
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source
+              attr="a"
+              other="b">8</source>
+          <script><![CDATA[
+   if (a < b) {}
+  ]]></script>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -40,6 +40,8 @@ import static org.codehaus.plexus.util.FileUtils.fileRead;
 public abstract class TidyMojo extends AbstractMojo {
     private static final PomTidy POM_TIDY = new PomTidy();
 
+    private static final PomTidy POM_TIDY_ENFORCING_INDENT = new PomTidy(true);
+
     /**
      * The Maven Project.
      */
@@ -53,6 +55,16 @@ public abstract class TidyMojo extends AbstractMojo {
      */
     @Parameter(property = "tidy.pomFile", defaultValue = "${project.file}")
     private File pomFile;
+
+    /**
+     * Set this to 'true' to indent every line of the POM with two spaces per level, or four spaces for a line that
+     * wraps a tag, as the POM Code Convention asks. By default only the children of the sorted sections are
+     * indented, using the indentation the POM already has.
+     *
+     * @since 1.5.0
+     */
+    @Parameter(property = "tidy.enforceIndent", defaultValue = "false")
+    protected boolean enforceIndent;
 
     /**
      * Set this to 'true' to skip execution.
@@ -104,7 +116,7 @@ public abstract class TidyMojo extends AbstractMojo {
      */
     protected String tidy(String pom) throws MojoExecutionException {
         try {
-            return POM_TIDY.tidy(pom);
+            return (enforceIndent ? POM_TIDY_ENFORCING_INDENT : POM_TIDY).tidy(pom);
         } catch (XMLStreamException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }

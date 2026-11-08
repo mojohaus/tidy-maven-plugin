@@ -34,8 +34,11 @@ The `pom.xml` file will
 of the Maven team.
 * have the nodes `groupId`, `artifactId` and `version` always in this order.
 
-Note: It is recommended that you use your IDE or other formatting tools to
-ensure that your `pom.xml` is indented correctly.
+Note: By default only the children of the sorted sections are indented, and they keep the
+indentation the `pom.xml` already has. Set `enforceIndent` to `true` (or run with
+`-Dtidy.enforceIndent=true`) to indent every line with two spaces per level, and a line that
+continues a tag, such as a wrapped attribute, with four spaces more than the tag. The text of an
+element, comments and CDATA sections keep their lines as they are.
 
 Note: The following sections can have their child elements reordered without affecting the build:
 
