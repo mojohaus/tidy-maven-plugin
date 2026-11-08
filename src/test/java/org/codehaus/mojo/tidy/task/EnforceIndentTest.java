@@ -60,7 +60,9 @@ class EnforceIndentTest {
         assertNotEquals(read("pom-expected.xml"), tidy);
     }
 
+    /** Reads a fixture with LF line endings, whatever the checkout wrote (Git on Windows may write CRLF). */
     private String read(String name) throws Exception {
-        return IOUtil.toString(Objects.requireNonNull(getClass().getResourceAsStream(PATH + name)));
+        return IOUtil.toString(Objects.requireNonNull(getClass().getResourceAsStream(PATH + name)))
+                .replace("\r\n", "\n");
     }
 }
