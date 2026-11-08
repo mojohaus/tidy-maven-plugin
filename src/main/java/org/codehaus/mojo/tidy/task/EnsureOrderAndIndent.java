@@ -37,6 +37,8 @@ import static org.codehaus.plexus.util.StringUtils.isWhitespace;
 import static org.codehaus.plexus.util.StringUtils.repeat;
 
 class EnsureOrderAndIndent implements TidyTask {
+    private static final List<String> LISTS_TO_TRIM = asList("dependencies", "plugins", "modules");
+
     private static final List<SectionSorter> SECTION_SORTERS = asList(
             new SectionSorter(
                     "/project",
@@ -106,10 +108,52 @@ class EnsureOrderAndIndent implements TidyTask {
         for (SectionSorter sorter : SECTION_SORTERS) {
             pom = sorter.sortSections(pom, format);
         }
+        pom = trimTrailingBlankLines(pom);
         if (enforceIndent) {
             pom = PomIndenter.indent(pom);
         }
         return pom;
+    }
+
+    /**
+     * Removes the blank lines between the last child of a list and its end tag, so the end tag follows on the next
+     * line. An empty list and a list that ends in text are left alone.
+     */
+    private static String trimTrailingBlankLines(String pom) throws XMLStreamException {
+        XMLEventReader reader = createEventReaderForPom(pom);
+        List<Boolean> hasChild = new ArrayList<Boolean>();
+        StringBuilder tidyPom = new StringBuilder();
+        int posFirstUnformatted = 0;
+        while (reader.hasNext()) {
+            XMLEvent event = reader.nextEvent();
+            if (event.isStartElement()) {
+                if (!hasChild.isEmpty()) {
+                    hasChild.set(hasChild.size() - 1, Boolean.TRUE);
+                }
+                hasChild.add(Boolean.FALSE);
+            } else if (event.isEndElement()) {
+                boolean listHasChild = hasChild.remove(hasChild.size() - 1);
+                String name = event.asEndElement().getName().getLocalPart();
+                if (listHasChild && LISTS_TO_TRIM.contains(name)) {
+                    int endTag = event.getLocation().getCharacterOffset();
+                    int startOfBlank = endTag;
+                    while (startOfBlank > 0 && isWhitespace(pom.substring(startOfBlank - 1, startOfBlank))) {
+                        --startOfBlank;
+                    }
+                    String blank = pom.substring(startOfBlank, endTag);
+                    int lastLineBreak = blank.lastIndexOf('\n');
+                    if (countMatches(blank, "\n") > 1 && pom.charAt(startOfBlank - 1) == '>') {
+                        boolean crlf = lastLineBreak > 0 && blank.charAt(lastLineBreak - 1) == '\r';
+                        tidyPom.append(pom, posFirstUnformatted, startOfBlank);
+                        tidyPom.append(crlf ? "\r\n" : "\n");
+                        tidyPom.append(blank.substring(lastLineBreak + 1));
+                        posFirstUnformatted = endTag;
+                    }
+                }
+            }
+        }
+        tidyPom.append(pom.substring(posFirstUnformatted));
+        return tidyPom.toString();
     }
 
     private static class SectionSorter {
