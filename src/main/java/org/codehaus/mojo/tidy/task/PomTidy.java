@@ -31,15 +31,29 @@ import static java.util.Arrays.asList;
 public class PomTidy {
     private static final FormatIdentifier FORMAT_IDENTIFIER = new FormatIdentifier();
 
-    private static final List<TidyTask> TIDY_TASKS = asList(
-            new EnsureXmlHeader(),
-            new EnsureOrderAndIndent(),
-            new EnsureSingleLineProjectStartTag(),
-            new EnsureTrailingNewLine());
+    private final List<TidyTask> tidyTasks;
+
+    public PomTidy() {
+        this(false);
+    }
+
+    /**
+     * Creates a tidy that can rewrite the indentation of the whole POM.
+     *
+     * @param enforceIndent whether to indent every line with two spaces per level, or four spaces for a line that
+     *                      wraps a tag
+     */
+    public PomTidy(boolean enforceIndent) {
+        tidyTasks = asList(
+                new EnsureXmlHeader(),
+                new EnsureOrderAndIndent(enforceIndent),
+                new EnsureSingleLineProjectStartTag(),
+                new EnsureTrailingNewLine());
+    }
 
     public String tidy(String pom) throws XMLStreamException {
         Format format = FORMAT_IDENTIFIER.identifyFormat(pom);
-        for (TidyTask task : TIDY_TASKS) {
+        for (TidyTask task : tidyTasks) {
             pom = task.tidyPom(pom, format);
         }
         return pom;
