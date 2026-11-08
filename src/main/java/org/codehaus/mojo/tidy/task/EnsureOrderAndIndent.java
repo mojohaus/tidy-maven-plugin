@@ -221,7 +221,7 @@ class EnsureOrderAndIndent implements TidyTask {
             String indent = calculateIndent(pom, starts);
             int first = calculateFirst(starts, pom);
             StringBuilder output = new StringBuilder();
-            output.append(pom.substring(startOfSection, first).trim());
+            addTextIfNotEmpty(output, indent, pom.substring(startOfSection, first), format);
             int i = 0;
             boolean firstGroupStarted = false;
             for (NodeGroup group : groups) {
