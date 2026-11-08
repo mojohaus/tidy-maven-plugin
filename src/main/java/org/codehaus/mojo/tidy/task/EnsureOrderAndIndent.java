@@ -170,7 +170,7 @@ class EnsureOrderAndIndent implements TidyTask {
             int startOfSection = getPosOfNextEvent(reader);
             int[] starts = new int[sequence.size()];
             int[] ends = new int[sequence.size()];
-            XMLEvent endScope = calculateStartsAndEnds(reader, starts, ends);
+            XMLEvent endScope = calculateStartsAndEnds(reader, pom, starts, ends);
             if (calculateFirst(starts, pom) == pom.length()) {
                 // none of the children to sort is present: keep the section as it is
                 return pom.substring(startOfSection, getPosOfNextEvent(reader));
@@ -178,7 +178,7 @@ class EnsureOrderAndIndent implements TidyTask {
             return formatSection(reader, pom, format, startOfSection, starts, ends, endScope);
         }
 
-        private XMLEvent calculateStartsAndEnds(XMLEventReader reader, int[] starts, int[] ends)
+        private XMLEvent calculateStartsAndEnds(XMLEventReader reader, String pom, int[] starts, int[] ends)
                 throws XMLStreamException {
             fill(starts, Integer.MAX_VALUE);
             fill(ends, -1);
@@ -201,13 +201,31 @@ class EnsureOrderAndIndent implements TidyTask {
                         QName name = event.asEndElement().getName();
                         if (hasToBeSorted(name)) {
                             int i = getSequenceIndex(name);
-                            ends[i] = getPosOfNextEvent(reader);
+                            ends[i] = endOfElementWithTrailingComment(pom, getPosOfNextEvent(reader));
                         }
                     }
                     --level;
                 }
             }
             throw new RuntimeException("End element missing.");
+        }
+
+        /**
+         * A comment that starts on the line of the element's end tag belongs to the element and moves with it.
+         *
+         * @param endOfElement the position right after the end tag
+         * @return the position after that comment, or {@code endOfElement} if no comment starts on that line
+         */
+        private int endOfElementWithTrailingComment(String pom, int endOfElement) {
+            int pos = endOfElement;
+            while (pos < pom.length() && (pom.charAt(pos) == ' ' || pom.charAt(pos) == '\t')) {
+                ++pos;
+            }
+            if (!pom.startsWith("<!--", pos)) {
+                return endOfElement;
+            }
+            int endOfComment = pom.indexOf("-->", pos + "<!--".length());
+            return endOfComment == -1 ? endOfElement : endOfComment + "-->".length();
         }
 
         private boolean hasToBeSorted(QName nodeName) {
