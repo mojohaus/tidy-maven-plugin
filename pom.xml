@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>tidy-maven-plugin</artifactId>
-  <version>1.5.0</version>
+  <version>1.5.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
   <name>Tidy Maven Plugin</name>
@@ -70,14 +70,14 @@
   <scm>
     <connection>scm:git:https://github.com/mojohaus/tidy-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/mojohaus/tidy-maven-plugin.git</developerConnection>
-    <tag>1.5.0</tag>
+    <tag>HEAD</tag>
     <url>https://github.com/mojohaus/tidy-maven-plugin/tree/master</url>
   </scm>
 
   <properties>
     <!-- run the ITs in parallel, one per CPU core -->
     <invoker.parallelThreads>1C</invoker.parallelThreads>
-    <project.build.outputTimestamp>2026-11-09T19:32:39Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2026-11-09T19:32:56Z</project.build.outputTimestamp>
     <mavenVersion>3.9.16</mavenVersion>
     <minimalMavenBuildVersion>3.9.0</minimalMavenBuildVersion>
   </properties>
