@@ -47,7 +47,11 @@ class TrailingBlankLinesTest {
         assertEquals(expected, new PomTidy().tidy(pom));
     }
 
+    /**
+     * Reads a fixture with LF line endings, whatever line endings the checkout gave it.
+     */
     private String read(String name) throws Exception {
-        return IOUtil.toString(Objects.requireNonNull(getClass().getResourceAsStream(PATH + name)));
+        return IOUtil.toString(Objects.requireNonNull(getClass().getResourceAsStream(PATH + name)))
+                .replace("\r\n", "\n");
     }
 }
