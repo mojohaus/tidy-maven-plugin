@@ -96,7 +96,7 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
         XMLEvent event = eventReader.nextEvent();
         while (null != event) {
             if (event.isStartElement()) {
-                if (event.asStartElement().getName().getLocalPart().equals("project")) {
+                if ("project".equals(event.asStartElement().getName().getLocalPart())) {
                     return resolveModelVersion(eventReader);
                 }
                 event = skipNestedContent(eventReader);
@@ -139,7 +139,7 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
         XMLEvent xmlEvent = eventReader.nextEvent();
         while (xmlEvent != null) {
             if (xmlEvent.isStartElement()) {
-                if (xmlEvent.asStartElement().getName().getLocalPart().equals("modelVersion")) {
+                if ("modelVersion".equals(xmlEvent.asStartElement().getName().getLocalPart())) {
                     return eventReader.getElementText();
                 } else {
                     xmlEvent = skipNestedContent(eventReader);
@@ -158,7 +158,7 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
         while (eventReader.hasNext()) {
             XMLEvent event = eventReader.nextEvent();
             if (event.isStartElement()
-                    && event.asStartElement().getName().getLocalPart().equals("project")) {
+                    && "project".equals(event.asStartElement().getName().getLocalPart())) {
                 return replaceProjectStartTag(pom, eventReader, event, projectStartTag, additionalProperties);
             }
         }
@@ -196,7 +196,7 @@ class EnsureSingleLineProjectStartTag implements TidyTask {
             final String value = additionalPropertiesMap.get(additionalProperty);
             if (value != null) {
                 result.append(' ');
-                if (additionalProperty.getPrefix().equals(XMLConstants.DEFAULT_NS_PREFIX)) {
+                if (XMLConstants.DEFAULT_NS_PREFIX.equals(additionalProperty.getPrefix())) {
                     result.append(additionalProperty.getLocalPart());
                 } else {
                     result.append(additionalProperty.getPrefix()).append(':').append(additionalProperty.getLocalPart());
