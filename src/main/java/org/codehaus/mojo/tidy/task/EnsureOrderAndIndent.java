@@ -121,7 +121,7 @@ class EnsureOrderAndIndent implements TidyTask {
      */
     private static String trimTrailingBlankLines(String pom) throws XMLStreamException {
         XMLEventReader reader = createEventReaderForPom(pom);
-        List<Boolean> hasChild = new ArrayList<Boolean>();
+        List<Boolean> hasChild = new ArrayList<>();
         StringBuilder tidyPom = new StringBuilder();
         int posFirstUnformatted = 0;
         while (reader.hasNext()) {
@@ -170,7 +170,7 @@ class EnsureOrderAndIndent implements TidyTask {
         }
 
         List<String> calculateSequence(NodeGroup[] groups) {
-            List<String> sequence = new ArrayList<String>();
+            List<String> sequence = new ArrayList<>();
             for (NodeGroup group : groups) {
                 sequence.addAll(group.nodes);
             }
