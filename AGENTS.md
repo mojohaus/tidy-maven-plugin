@@ -57,17 +57,16 @@ what the code and the POMs do not make obvious.
 
 ## Dependencies
 
-- Dependabot excludes `src/it`, `src/it-repo` and `src/test/resources` from version updates, so the
-  fixture POMs stay as they are; security updates can still propose them, so close those pull
-  requests.
+- Dependabot excludes `src/it` and `src/test/resources` from version updates, so the fixture POMs
+  stay as they are; security updates can still propose them, so close those pull requests.
 - Deliberate pins in `.github/dependabot.yml`: `maven-core` and `maven-plugin-api` stay below
   3.10.0, because the plugin baseline is the Maven 3.9.x line.
 
 ## Continuous integration and pull requests
 
-- `.github/workflows/maven.yml` calls the shared `maven-verify.yml@v5` workflow from
-  `apache/maven-gh-actions-shared`. Branches in this repository build under the push event, so look
-  at the push run for a pull request from a same-repository branch.
+- `.github/workflows/maven.yml` calls the shared `maven-verify.yml` workflow of `mojohaus/.github`.
+  Branches in this repository build under the push event, so look at the push run for a pull request
+  from a same-repository branch.
 - Pull requests are squash- or rebase-merged; merge commits are disabled. Release Drafter builds
   the release notes from the titles and labels, so the title should describe the change for a
   user.
