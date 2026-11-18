@@ -20,12 +20,12 @@ package org.codehaus.mojo.tidy;
  */
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-
-import static org.codehaus.plexus.util.FileUtils.fileWrite;
 
 /**
  * Tidy up the <code>pom.xml</code> into the canonical order.
@@ -36,7 +36,7 @@ public class PomMojo extends TidyMojo {
     protected void executeForPom(String pom) throws MojoExecutionException, MojoFailureException {
         try {
             String tidyPom = tidy(pom);
-            fileWrite(getPomFile(), tidyPom);
+            Files.write(getPomFile().toPath(), tidyPom.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to write the tidy POM.", e);
         }
