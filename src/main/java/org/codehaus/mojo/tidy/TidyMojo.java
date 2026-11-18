@@ -23,6 +23,8 @@ import javax.xml.stream.XMLStreamException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,8 +32,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.tidy.task.PomTidy;
-
-import static org.codehaus.plexus.util.FileUtils.fileRead;
 
 /**
  * An abstract base class for Mojos of the Tidy plugin. Handles common
@@ -98,7 +98,7 @@ public abstract class TidyMojo extends AbstractMojo {
      */
     private String getProjectPom() throws MojoExecutionException {
         try {
-            return fileRead(getPomFile());
+            return new String(Files.readAllBytes(getPomFile().toPath()), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to read the POM.", e);
         }
