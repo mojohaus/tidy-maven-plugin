@@ -50,6 +50,11 @@ indentation the `pom.xml` already has. Set `enforceIndent` to `true` (or run wit
 continues a tag, such as a wrapped attribute, with four spaces more than the tag. The text of an
 element, comments and CDATA sections keep their lines as they are.
 
+Note: An element written on a single line, such as
+`<dependency><version>1</version><artifactId>b</artifactId><groupId>a</groupId></dependency>`,
+is split over several lines when its children are sorted, one child per line. A nested element that
+is not part of the sorted children, such as `exclusions`, stays as written.
+
 Note: To format another file, set `pomFile` (`-Dtidy.pomFile=path/to/pom.xml`); it defaults to the project's
 `pom.xml`. Set `tidy.skip` to `true` to skip a goal.
 
