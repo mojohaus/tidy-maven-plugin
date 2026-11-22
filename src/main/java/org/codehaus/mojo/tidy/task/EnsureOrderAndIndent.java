@@ -296,8 +296,8 @@ class EnsureOrderAndIndent implements TidyTask {
                 int[] ends,
                 XMLEvent endScope)
                 throws XMLStreamException {
-            String outdent = calculateOutdent(pom, endScope);
-            String indent = calculateIndent(pom, starts);
+            String outdent = calculateOutdent(pom, endScope, startOfSection);
+            String indent = calculateIndent(pom, starts, outdent);
             int first = calculateFirst(starts, pom);
             StringBuilder output = new StringBuilder();
             addTextIfNotEmpty(output, indent, pom.substring(startOfSection, first), format);
@@ -326,9 +326,26 @@ class EnsureOrderAndIndent implements TidyTask {
             return output.toString();
         }
 
-        private String calculateOutdent(String pom, XMLEvent endScope) {
+        /**
+         * The indentation of the end tag of the section. If the end tag shares its line with other content, as in a
+         * section written on a single line, it is the indentation of the line that holds the start tag.
+         */
+        private String calculateOutdent(String pom, XMLEvent endScope, int startOfSection) {
             String before = pom.substring(0, endScope.getLocation().getCharacterOffset());
-            return substringAfterLast(before, "\n");
+            String endLine = substringAfterLast(before, "\n");
+            if (isWhitespace(endLine)) {
+                return endLine;
+            }
+            String beforeStart = pom.substring(0, startOfSection);
+            return leadingWhitespace(substringAfterLast(beforeStart, "\n"));
+        }
+
+        private String leadingWhitespace(String line) {
+            int end = 0;
+            while (end < line.length() && (line.charAt(end) == ' ' || line.charAt(end) == '\t')) {
+                ++end;
+            }
+            return line.substring(0, end);
         }
 
         private int calculateFirst(int[] starts, String pom) {
@@ -347,7 +364,7 @@ class EnsureOrderAndIndent implements TidyTask {
             return last;
         }
 
-        private String calculateIndent(String input, int[] starts) {
+        private String calculateIndent(String input, int[] starts, String outdent) {
             int numNodesWithSpaceIndent = 0;
             int numNodesWithTabIndent = 0;
             int spaceIndentTotal = 0;
@@ -368,7 +385,7 @@ class EnsureOrderAndIndent implements TidyTask {
                 }
             }
             if (numNodesWithSpaceIndent == 0 && numNodesWithTabIndent == 0) {
-                return "  ";
+                return outdent + "  ";
             } else if (numNodesWithSpaceIndent > numNodesWithTabIndent) {
                 int averageIndent = spaceIndentTotal / numNodesWithSpaceIndent;
                 return repeat(" ", averageIndent);
@@ -381,8 +398,11 @@ class EnsureOrderAndIndent implements TidyTask {
         private String calculateIndent(String input, int startOfTag) {
             for (int i = startOfTag; i > 1; --i) {
                 String character = input.substring(i - 1, i);
-                if (!isWhitespace(character) || "\n".equals(character) || "\r".equals(character)) {
+                if ("\n".equals(character) || "\r".equals(character)) {
                     return input.substring(i, startOfTag);
+                } else if (!isWhitespace(character)) {
+                    // the tag follows other content on its line: it has no indentation
+                    return "";
                 }
             }
             return input;
@@ -391,7 +411,7 @@ class EnsureOrderAndIndent implements TidyTask {
         private String getPrecedingText(String pom, int start, int[] ends) {
             int startPrecedingText = -1;
             for (int end : ends) {
-                if (end < start) {
+                if (end <= start) {
                     startPrecedingText = max(startPrecedingText, end);
                 }
             }

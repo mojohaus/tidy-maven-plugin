@@ -46,6 +46,7 @@ class PomTidyTest {
                 "pom-with-profiles",
                 "pom-with-reporting",
                 "project-single-line",
+                "single-line-elements",
                 "project-support-4-1-0-attributes",
                 "project-support-4-1-0-attributes-with-unordered-nodes",
                 "project-support-4-1-0-model-version"
@@ -54,6 +55,13 @@ class PomTidyTest {
         String pom = readPom(name, "pom.xml");
         String tidyPom = new PomTidy().tidy(pom);
         assertEquals(readPom(name, "pom-expected.xml"), tidyPom);
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @ValueSource(strings = {"single-line-elements"})
+    void tidyPomStaysTidy(String name) throws Exception {
+        String tidyPom = readPom(name, "pom-expected.xml");
+        assertEquals(tidyPom, new PomTidy().tidy(tidyPom));
     }
 
     private String readPom(String test, String filename) throws IOException {

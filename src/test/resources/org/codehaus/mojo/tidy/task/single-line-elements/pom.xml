@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent><version>1</version><artifactId>p</artifactId><groupId>g</groupId></parent>
+  <artifactId>a</artifactId>
+  <dependencies>
+    <dependency><version>1</version><artifactId>b</artifactId><groupId>a</groupId></dependency>
+    <dependency><groupId>c</groupId><artifactId>d</artifactId><version>2</version><exclusions><exclusion><artifactId>y</artifactId><groupId>x</groupId></exclusion></exclusions></dependency> <!-- keep -->
+    <dependency id="x"><!-- note --><artifactId>m</artifactId> <groupId>n</groupId></dependency>
+    <dependency> <version>5</version> <artifactId>q</artifactId> <groupId>r</groupId> </dependency>
+  </dependencies>
+  <build>
+    <extensions>
+      <extension><version>3</version><artifactId>e</artifactId><groupId>f</groupId></extension>
+    </extensions>
+    <plugins>
+      <plugin><version>4</version><artifactId>h</artifactId><groupId>g</groupId></plugin>
+    </plugins>
+  </build>
+</project>
