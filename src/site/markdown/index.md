@@ -39,10 +39,6 @@ To tidy up the `pom.xml`, simply invoke it on your project, e.g.
 
         mvn tidy:pom
 
-The `pom.xml` file will
-
-* be rewritten according to the
-  [POM Code Convention](http://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
-  of the Maven team.
-* have the nodes `groupId`, `artifactId` and `version` always in this order.
-
+The `pom.xml` file will be rewritten according to the
+[POM Code Convention](https://maven.apache.org/developers/conventions/code.html#POM_Code_Convention)
+of the Maven team; the [usage page](./usage.html) lists what changes.
